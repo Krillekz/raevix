@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Trash Bin">
+  <defs>
+    <linearGradient id="trBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#360d19"/>
+      <stop offset="1" stop-color="#120509"/>
+    </linearGradient>
+    <linearGradient id="trFg" x1="20" y1="18" x2="44" y2="50">
+      <stop offset="0" stop-color="#ffe0e5"/>
+      <stop offset="1" stop-color="#ff4d63"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#trBg)" stroke="#ff2f4d" stroke-opacity=".42"/>
+  <path d="M24 22v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3" stroke="url(#trFg)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M16 23h32" stroke="url(#trFg)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M20 23l1.8 23.2A3.2 3.2 0 0 0 25 49.4h14a3.2 3.2 0 0 0 3.2-3.2L44 23" stroke="url(#trFg)" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M28 30v12M36 30v12" stroke="#ff8b9c" stroke-width="2" stroke-linecap="round" stroke-opacity=".8"/>
+</svg>

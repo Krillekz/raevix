@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 1000" width="700" height="1000" role="img" aria-label="Anime idol character with twin tails and a glowing headset">
+  <defs>
+    <linearGradient id="idolHairBack" x1="190" y1="140" x2="520" y2="830" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#561038"/>
+      <stop offset=".55" stop-color="#2c0b27"/>
+      <stop offset="1" stop-color="#160615"/>
+    </linearGradient>
+    <linearGradient id="idolHairFront" x1="250" y1="150" x2="440" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff9dcf"/>
+      <stop offset=".5" stop-color="#e0418f"/>
+      <stop offset="1" stop-color="#7d1550"/>
+    </linearGradient>
+    <linearGradient id="idolSkin" x1="260" y1="180" x2="440" y2="460" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff0ea"/>
+      <stop offset="1" stop-color="#f2c3c8"/>
+    </linearGradient>
+    <linearGradient id="idolJacket" x1="170" y1="470" x2="530" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2a0e2c"/>
+      <stop offset=".55" stop-color="#180a20"/>
+      <stop offset="1" stop-color="#0c050f"/>
+    </linearGradient>
+    <linearGradient id="idolIris" x1="288" y1="306" x2="316" y2="338" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8ff2ff"/>
+      <stop offset=".5" stop-color="#7ea8ff"/>
+      <stop offset="1" stop-color="#b06bff"/>
+    </linearGradient>
+    <radialGradient id="idolBlush" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ff8fae" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ff8fae" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="idolGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      #idolTailL { transform-origin: 242px 280px; animation: idol-sway 8s ease-in-out infinite; }
+      #idolTailR { transform-origin: 458px 280px; animation: idol-sway 9.5s ease-in-out infinite reverse; }
+      #idolEarring { animation: idol-glint 3.6s ease-in-out infinite; }
+      @keyframes idol-sway {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(-1.8deg); }
+      }
+      @keyframes idol-glint {
+        0%, 100% { opacity: .55; }
+        50% { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #idolTailL, #idolTailR, #idolEarring { animation: none; }
+      }
+    </style>
+  </defs>
+
+  <!-- Back hair -->
+  <path fill="url(#idolHairBack)" d="M350 118C256 118 196 186 194 282C192 344 212 392 200 452C188 514 176 562 166 612C210 582 244 540 260 490L440 490C456 540 490 582 534 612C524 562 512 514 500 452C488 392 508 344 506 282C504 186 444 118 350 118Z"/>
+
+  <g id="idolTailL">
+    <path fill="url(#idolHairBack)" d="M238 252C198 336 184 442 188 546C192 646 176 746 158 828C200 786 232 704 246 622C258 542 262 440 256 356Z"/>
+    <path fill="#ff5aa5" opacity=".28" d="M226 300C204 400 198 520 204 620C198 520 212 396 234 310Z"/>
+  </g>
+  <g id="idolTailR">
+    <path fill="url(#idolHairBack)" d="M462 252C502 336 516 442 512 546C508 646 524 746 542 828C500 786 468 704 454 622C442 542 438 440 444 356Z"/>
+    <path fill="#ff5aa5" opacity=".28" d="M474 300C496 400 502 520 496 620C502 520 488 396 466 310Z"/>
+  </g>
+
+  <!-- Body -->
+  <path fill="url(#idolJacket)" d="M350 462C286 470 232 506 204 574C182 628 172 716 168 806L164 1000H536L532 806C528 716 518 628 496 574C468 506 414 470 350 462Z"/>
+  <path fill="#120717" d="M350 468L304 540L318 626L350 558L382 626L396 540Z"/>
+  <path stroke="#ff5aa5" stroke-opacity=".65" stroke-width="2.4" fill="none" d="M304 540L318 626M396 540L382 626"/>
+  <path stroke="#ff8fae" stroke-opacity=".18" stroke-width="1.6" d="M350 610V1000"/>
+  <path fill="#200a23" d="M204 574C226 560 248 566 262 588L238 660L186 626Z"/>
+  <path fill="#200a23" d="M496 574C474 560 452 566 438 588L462 660L514 626Z"/>
+  <path stroke="#7de5ff" stroke-opacity=".32" stroke-width="2" fill="none" d="M190 628L234 598M510 628L466 598"/>
+  <circle cx="350" cy="712" r="22" fill="none" stroke="#ff8fae" stroke-opacity=".55" stroke-width="1.6"/>
+  <path fill="#ffd6ea" d="M350 696L354.4 707.6L367 708.4L357 716.4L360.4 728.6L350 721.6L339.6 728.6L343 716.4L333 708.4L345.6 707.6Z" opacity=".85"/>
+
+  <!-- Neck and face -->
+  <path fill="#eab4ba" d="M310 416V478C330 494 370 494 390 478V416Z"/>
+  <path fill="url(#idolSkin)" d="M350 178C286 178 248 226 248 296C248 362 290 424 350 456C410 424 452 362 452 296C452 226 414 178 350 178Z"/>
+  <path fill="#e8b1bb" d="M248 292C234 282 230 310 244 324Z"/>
+  <path fill="#e8b1bb" d="M452 292C466 282 470 310 456 324Z"/>
+  <ellipse cx="350" cy="446" rx="48" ry="12" fill="#d98f9c" opacity=".3"/>
+
+  <!-- Fringe and side locks -->
+  <path fill="url(#idolHairFront)" d="M248 292C237 206 284 158 350 156C416 158 463 206 452 292C436 250 410 222 386 212C392 242 388 268 376 294C364 256 346 230 326 218C328 252 318 282 300 302C292 266 276 242 260 232C264 256 258 278 248 292Z"/>
+  <path fill="url(#idolHairFront)" d="M250 256C236 322 238 390 252 446C262 392 266 340 262 294Z"/>
+  <path fill="url(#idolHairFront)" d="M450 256C464 322 462 390 448 446C438 392 434 340 438 294Z"/>
+  <path stroke="#ffc0e0" stroke-opacity=".45" stroke-width="2" fill="none" d="M274 214C292 224 306 244 316 266M392 214C376 226 364 246 356 268"/>
+
+  <!-- Brows and eyes -->
+  <path stroke="#57243f" stroke-width="4" stroke-linecap="round" fill="none" d="M278 290C290 282 308 283 320 290M422 290C410 282 392 283 380 290"/>
+
+  <path fill="#fff8fb" d="M272 320C282 302 302 296 318 304C324 308 328 314 330 320C318 336 296 342 282 334C277 330 274 325 272 320Z"/>
+  <path fill="#fff8fb" d="M428 320C418 302 398 296 382 304C376 308 372 314 370 320C382 336 404 342 418 334C423 330 426 325 428 320Z"/>
+
+  <ellipse cx="302" cy="321" rx="13" ry="16" fill="url(#idolIris)"/>
+  <ellipse cx="398" cy="321" rx="13" ry="16" fill="url(#idolIris)"/>
+  <ellipse cx="302" cy="322" rx="5.5" ry="10" fill="#190620"/>
+  <ellipse cx="398" cy="322" rx="5.5" ry="10" fill="#190620"/>
+  <circle cx="298" cy="314" r="4.2" fill="#fff"/>
+  <circle cx="394" cy="314" r="4.2" fill="#fff"/>
+  <circle cx="307" cy="329" r="2.1" fill="#fff" opacity=".85"/>
+  <circle cx="403" cy="329" r="2.1" fill="#fff" opacity=".85"/>
+
+  <path stroke="#2a0a22" stroke-width="5" stroke-linecap="round" fill="none" d="M270 319C282 299 304 294 321 303M430 319C418 299 396 294 379 303"/>
+  <path stroke="#2a0a22" stroke-width="2.4" stroke-linecap="round" fill="none" d="M264 312L272 320M436 312L428 320"/>
+
+  <ellipse cx="290" cy="360" rx="26" ry="11" fill="url(#idolBlush)"/>
+  <ellipse cx="410" cy="360" rx="26" ry="11" fill="url(#idolBlush)"/>
+  <path stroke="#cf8b99" stroke-width="2.6" stroke-linecap="round" fill="none" d="M350 348C347 354 349 358 355 359"/>
+  <path stroke="#a83e60" stroke-width="3.4" stroke-linecap="round" fill="none" d="M336 382C343 389 357 389 364 382"/>
+  <path stroke="#ff9bb9" stroke-width="1.6" stroke-linecap="round" fill="none" d="M342 390C347 393 353 393 358 390" opacity=".7"/>
+
+  <!-- Star clip -->
+  <g transform="translate(272 205) scale(1.5)" filter="url(#idolGlow)">
+    <path fill="#ffe9a8" d="M0 -12L3.2 -4.4L11.4 -4.2L4.9 1L7.1 8.8L0 4.2L-7.1 8.8L-4.9 1L-11.4 -4.2L-3.2 -4.4Z"/>
+  </g>
+
+  <!-- Headset -->
+  <path stroke="#190820" stroke-width="13" fill="none" stroke-linecap="round" d="M244 300C244 186 456 186 456 300"/>
+  <path stroke="#ff5aa5" stroke-opacity=".55" stroke-width="2.4" fill="none" stroke-linecap="round" d="M248 292C254 194 446 194 452 292"/>
+  <rect x="224" y="286" width="34" height="58" rx="16" fill="#1a0a20" stroke="#ff5aa5" stroke-opacity=".7" stroke-width="2"/>
+  <rect x="442" y="286" width="34" height="58" rx="16" fill="#1a0a20" stroke="#ff5aa5" stroke-opacity=".7" stroke-width="2"/>
+  <circle cx="241" cy="315" r="5.5" fill="#7de5ff" filter="url(#idolGlow)"/>
+  <circle cx="459" cy="315" r="5.5" fill="#7de5ff" filter="url(#idolGlow)"/>
+  <path stroke="#1a0a20" stroke-width="4" stroke-linecap="round" fill="none" d="M459 340C472 374 466 404 446 414"/>
+  <circle cx="446" cy="414" r="4" fill="#ff8fae" filter="url(#idolGlow)"/>
+
+  <!-- Rim light -->
+  <path stroke="#ff9dcf" stroke-opacity=".5" stroke-width="2.6" fill="none" stroke-linecap="round" d="M452 296C462 350 486 398 502 456M506 282C516 330 522 374 520 430"/>
+  <path stroke="#7de5ff" stroke-opacity=".32" stroke-width="2" fill="none" stroke-linecap="round" d="M532 806C528 716 518 628 496 574"/>
+</svg>

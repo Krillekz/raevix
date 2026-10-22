@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 1000" width="700" height="1000" role="img" aria-label="Anime cyber ronin in a hood with a glowing visor and katana">
+  <defs>
+    <radialGradient id="roninMoon" cx=".38" cy=".34" r=".66">
+      <stop offset="0" stop-color="#e8fbff" stop-opacity=".9"/>
+      <stop offset=".45" stop-color="#7fd8ff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#3ad8ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="roninHood" x1="220" y1="120" x2="500" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#20304d"/>
+      <stop offset=".5" stop-color="#101728"/>
+      <stop offset="1" stop-color="#070912"/>
+    </linearGradient>
+    <linearGradient id="roninCoat" x1="150" y1="440" x2="560" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101b2e"/>
+      <stop offset=".55" stop-color="#0a0d18"/>
+      <stop offset="1" stop-color="#05060c"/>
+    </linearGradient>
+    <linearGradient id="roninVisor" x1="300" y1="310" x2="400" y2="338" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8ff2ff"/>
+      <stop offset=".5" stop-color="#3ad8ff"/>
+      <stop offset="1" stop-color="#b06bff"/>
+    </linearGradient>
+    <linearGradient id="roninScarf" x1="310" y1="440" x2="520" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff2f4d"/>
+      <stop offset="1" stop-color="#6d1030"/>
+    </linearGradient>
+    <linearGradient id="roninBlade" x1="120" y1="700" x2="540" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e8fbff"/>
+      <stop offset=".7" stop-color="#9fe9ff"/>
+      <stop offset="1" stop-color="#3ad8ff"/>
+    </linearGradient>
+    <filter id="roninGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      #roninScarf { transform-origin: 316px 452px; animation: ronin-sway 6.5s ease-in-out infinite; }
+      #roninVisor { animation: ronin-pulse 3.4s ease-in-out infinite; }
+      @keyframes ronin-sway {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(2.2deg); }
+      }
+      @keyframes ronin-pulse {
+        0%, 100% { opacity: .75; }
+        50% { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #roninScarf, #roninVisor { animation: none; }
+      }
+    </style>
+  </defs>
+
+  <!-- Moon -->
+  <circle cx="380" cy="330" r="262" fill="url(#roninMoon)" opacity=".55"/>
+  <circle cx="380" cy="330" r="206" fill="none" stroke="#9fe9ff" stroke-opacity=".18" stroke-width="1.6"/>
+
+  <!-- Katana behind the body -->
+  <g transform="rotate(-24 350 710)">
+    <rect x="96" y="694" width="500" height="20" rx="10" fill="#0b0e18" stroke="#3ad8ff" stroke-opacity=".45" stroke-width="1.6"/>
+    <rect x="120" y="697" width="440" height="3.4" fill="url(#roninBlade)" opacity=".9"/>
+    <rect x="512" y="682" width="112" height="44" rx="16" fill="#171024" stroke="#3ad8ff" stroke-opacity=".55" stroke-width="2"/>
+    <path stroke="#8ff2ff" stroke-opacity=".35" stroke-width="1.6" d="M530 692H602M530 700H598M530 708H588"/>
+    <path stroke="#ff2f4d" stroke-width="3" stroke-linecap="round" d="M500 678V726" opacity=".85"/>
+  </g>
+
+  <!-- Coat -->
+  <path fill="url(#roninCoat)" d="M350 418C252 430 188 480 158 562C130 640 118 760 120 1000H580C582 760 570 640 542 562C512 480 448 430 350 418Z"/>
+  <path fill="#0b1220" d="M350 430C300 470 272 530 264 606L350 660L436 606C428 530 400 470 350 430Z"/>
+  <path stroke="#3ad8ff" stroke-opacity=".5" stroke-width="2.2" fill="none" d="M264 606L350 660L436 606"/>
+  <path fill="#0e1626" d="M190 520C218 494 258 494 286 522L258 612L182 574Z"/>
+  <path fill="#0e1626" d="M510 520C482 494 442 494 414 522L442 612L518 574Z"/>
+  <path stroke="#8ff2ff" stroke-opacity=".28" stroke-width="2" fill="none" d="M194 566L256 590M506 566L444 590"/>
+  <path stroke="#ff2f4d" stroke-opacity=".4" stroke-width="2" fill="none" d="M350 660V1000"/>
+
+  <!-- Scarf -->
+  <path id="roninScarf" fill="url(#roninScarf)" d="M304 440C356 468 420 458 466 416C442 474 456 520 500 548C438 548 370 520 314 474Z" opacity=".9"/>
+  <path fill="#ff8fae" opacity=".25" d="M318 458C368 478 414 474 448 444C412 482 366 486 326 470Z"/>
+
+  <!-- Hood -->
+  <path fill="url(#roninHood)" d="M350 118C256 118 204 198 213 300C219 372 250 420 286 446H414C450 420 481 372 487 300C496 198 444 118 350 118Z"/>
+  <path fill="#06070d" d="M300 218C300 198 400 198 400 218L406 350C406 392 294 392 294 350Z"/>
+  <path fill="#111827" stroke="#3ad8ff" stroke-opacity=".35" stroke-width="1.6" d="M302 300C322 286 378 286 398 300L394 362C380 384 320 384 306 362Z"/>
+  <path id="roninVisor" fill="url(#roninVisor)" filter="url(#roninGlow)" d="M300 318L400 306L403 331L303 343Z"/>
+  <path stroke="#0a0d18" stroke-width="2.2" d="M350 306V344" opacity=".55"/>
+  <circle cx="385" cy="322" r="3.2" fill="#fff"/>
+
+  <!-- Hood rim light -->
+  <path stroke="#8ff2ff" stroke-opacity=".45" stroke-width="2.6" fill="none" stroke-linecap="round" d="M213 300C219 372 250 420 286 446M487 300C481 372 450 420 414 446"/>
+  <path stroke="#ff2f4d" stroke-opacity=".35" stroke-width="2" fill="none" stroke-linecap="round" d="M244 188C284 152 392 148 442 184"/>
+
+  <!-- Chest straps -->
+  <path stroke="#273449" stroke-width="8" fill="none" d="M264 606L340 760M436 606L360 760"/>
+  <path stroke="#3ad8ff" stroke-opacity=".4" stroke-width="2" fill="none" d="M264 606L340 760M436 606L360 760"/>
+  <rect x="330" y="742" width="40" height="26" rx="6" fill="#0b0e18" stroke="#ff2f4d" stroke-opacity=".6" stroke-width="1.6"/>
+
+  <!-- Coat seams -->
+  <path stroke="#8ff2ff" stroke-opacity=".22" stroke-width="1.6" fill="none" d="M138 760C150 690 178 632 214 596M562 760C550 690 522 632 486 596"/>
+  <path stroke="#ff2f4d" stroke-opacity=".32" stroke-width="2" fill="none" stroke-linecap="round" d="M120 1000C128 852 138 746 158 662"/>
+</svg>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Neon Breakout — Raevix Arcade</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      background:
+        radial-gradient(80% 60% at 50% -10%, rgba(255, 47, 77, 0.2), transparent 65%),
+        radial-gradient(60% 50% at 80% 110%, rgba(72, 198, 255, 0.1), transparent 70%),
+        #08040a;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="Neon Breakout game"></canvas>
+
+  <div class="hud">
+    <span>Score <b id="score">0</b></span>
+    <span class="hud__mid">Neon Breakout</span>
+    <span>Lives <b id="lives">3</b></span>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <p class="eyebrow">Raevix Arcade</p>
+      <h1 id="overlayTitle">Neon Breakout</h1>
+      <p id="overlayText">Clear the neon wall without losing all three lives. The ball tightens up after every rebound.</p>
+      <div class="keys" id="overlayKeys">
+        <span>Mouse / ← →</span>
+        <span>WASD</span>
+        <span>Touch</span>
+      </div>
+      <button class="btn" id="startBtn" type="button">Launch ball</button>
+    </div>
+  </div>
+
+  <p class="hint">Bounce the ball · clear the wall</p>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const livesEl = document.getElementById('lives');
+      const overlay = document.getElementById('overlay');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlayText = document.getElementById('overlayText');
+      const overlayKeys = document.getElementById('overlayKeys');
+      const startBtn = document.getElementById('startBtn');
+
+      const COLORS = ['#ff2f4d', '#ff7043', '#ffd34d', '#4dd2ff'];
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      let W = 0;
+      let H = 0;
+      let running = false;
+      let score = 0;
+      let lives = 3;
+      let baseSpeed = 340;
+      let bricks = [];
+      let keyLeft = false;
+      let keyRight = false;
+      let paddlePlaced = false;
+      let best = Number(localStorage.getItem('raevix.breakout.best') || 0) || 0;
+
+      const paddle = { x: 0, y: 0, w: 110, h: 12 };
+      const ball = { x: 0, y: 0, vx: 0, vy: 0, r: 7 };
+
+      function roundRect(x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(score);
+        livesEl.textContent = String(Math.max(0, lives));
+      }
+
+      function buildBricks() {
+        bricks = [];
+        const cols = W < 560 ? 6 : 8;
+        const rows = 4;
+        const gap = 8;
+        const margin = Math.max(14, W < 560 ? 14 : (W - cols * 74 - gap * (cols - 1)) / 2);
+        const brickW = (W - margin * 2 - gap * (cols - 1)) / cols;
+        const brickH = clamp(H * 0.028, 16, 26);
+        const top = clamp(H * 0.13, 64, 120);
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let col = 0; col < cols; col += 1) {
+            bricks.push({
+              x: margin + col * (brickW + gap),
+              y: top + row * (brickH + gap),
+              w: brickW,
+              h: brickH,
+              color: COLORS[row % COLORS.length],
+              points: (rows - row) * 10
+            });
+          }
+        }
+      }
+
+      function resetBall() {
+        ball.x = paddle.x + paddle.w / 2;
+        ball.y = paddle.y - ball.r - 3;
+        ball.vx = (Math.random() * 2 - 1) * 170;
+        ball.vy = -Math.sqrt(Math.max(baseSpeed * baseSpeed - ball.vx * ball.vx, 180 * 180));
+      }
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth || window.innerWidth;
+        H = canvas.clientHeight || window.innerHeight;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        paddle.w = clamp(W * 0.2, 70, 140);
+        paddle.h = 12;
+        paddle.y = H - Math.max(34, H * 0.08);
+        if (!paddlePlaced) {
+          paddle.x = (W - paddle.w) / 2;
+          paddlePlaced = true;
+        }
+        paddle.x = clamp(paddle.x, 8, Math.max(8, W - paddle.w - 8));
+
+        buildBricks();
+        if (!running) {
+          ball.x = paddle.x + paddle.w / 2;
+          ball.y = paddle.y - ball.r - 3;
+          ball.vx = 0;
+          ball.vy = 0;
+        }
+      }
+
+      function showOverlay(title, text, label, showKeys) {
+        overlayTitle.textContent = title;
+        overlayText.textContent = text;
+        startBtn.textContent = label;
+        overlayKeys.hidden = !showKeys;
+        overlay.classList.remove('hidden');
+      }
+
+      function finish(title, text) {
+        running = false;
+        showOverlay(title, text, 'Play again', false);
+      }
+
+      function startGame() {
+        overlay.classList.add('hidden');
+        score = 0;
+        lives = 3;
+        baseSpeed = 340;
+        paddle.x = (W - paddle.w) / 2;
+        buildBricks();
+        resetBall();
+        running = true;
+        updateHud();
+      }
+
+      startBtn.addEventListener('click', startGame);
+      window.addEventListener('resize', resize);
+
+      canvas.addEventListener('pointermove', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        paddle.x = clamp(event.clientX - rect.left - paddle.w / 2, 8, Math.max(8, W - paddle.w - 8));
+      });
+
+      canvas.addEventListener('pointerdown', (event) => {
+        if (running) return;
+        const rect = canvas.getBoundingClientRect();
+        paddle.x = clamp(event.clientX - rect.left - paddle.w / 2, 8, Math.max(8, W - paddle.w - 8));
+      });
+
+      window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (key === 'arrowleft' || key === 'a') {
+          keyLeft = true;
+          event.preventDefault();
+        } else if (key === 'arrowright' || key === 'd') {
+          keyRight = true;
+          event.preventDefault();
+        } else if (key === ' ' || key === 'enter') {
+          event.preventDefault();
+          if (!running) startGame();
+        }
+      });
+
+      window.addEventListener('keyup', (event) => {
+        const key = event.key.toLowerCase();
+        if (key === 'arrowleft' || key === 'a') keyLeft = false;
+        if (key === 'arrowright' || key === 'd') keyRight = false;
+      });
+
+      window.addEventListener('blur', () => {
+        keyLeft = false;
+        keyRight = false;
+      });
+
+      function update(dt) {
+        if (!running) return;
+
+        if (keyLeft) paddle.x -= 560 * dt;
+        if (keyRight) paddle.x += 560 * dt;
+        paddle.x = clamp(paddle.x, 8, Math.max(8, W - paddle.w - 8));
+
+        ball.x += ball.vx * dt;
+        ball.y += ball.vy * dt;
+
+        if (ball.x - ball.r < 0) {
+          ball.x = ball.r;
+          ball.vx = Math.abs(ball.vx);
+        } else if (ball.x + ball.r > W) {
+          ball.x = W - ball.r;
+          ball.vx = -Math.abs(ball.vx);
+        }
+
+        if (ball.y - ball.r < 0) {
+          ball.y = ball.r;
+          ball.vy = Math.abs(ball.vy);
+        }
+
+        if (
+          ball.vy > 0 &&
+          ball.y + ball.r >= paddle.y &&
+          ball.y - ball.r <= paddle.y + paddle.h &&
+          ball.x >= paddle.x - ball.r &&
+          ball.x <= paddle.x + paddle.w + ball.r
+        ) {
+          ball.y = paddle.y - ball.r - 0.5;
+          const offset = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+          ball.vx = clamp(offset * 420, -430, 430);
+          const speed = Math.max(baseSpeed, Math.hypot(ball.vx, ball.vy));
+          ball.vy = -Math.sqrt(Math.max(speed * speed - ball.vx * ball.vx, 150 * 150));
+        }
+
+        for (let i = bricks.length - 1; i >= 0; i -= 1) {
+          const brick = bricks[i];
+          const nearestX = clamp(ball.x, brick.x, brick.x + brick.w);
+          const nearestY = clamp(ball.y, brick.y, brick.y + brick.h);
+          const dx = ball.x - nearestX;
+          const dy = ball.y - nearestY;
+
+          if (dx * dx + dy * dy <= ball.r * ball.r) {
+            const overlapX = Math.min(ball.x + ball.r - brick.x, brick.x + brick.w - (ball.x - ball.r));
+            const overlapY = Math.min(ball.y + ball.r - brick.y, brick.y + brick.h - (ball.y - ball.r));
+            if (overlapX < overlapY) ball.vx *= -1;
+            else ball.vy *= -1;
+
+            bricks.splice(i, 1);
+            score += brick.points;
+            baseSpeed = Math.min(520, baseSpeed + 2);
+            if (score > best) {
+              best = score;
+              try { localStorage.setItem('raevix.breakout.best', String(best)); } catch (error) { /* ignore */ }
+            }
+            updateHud();
+
+            if (!bricks.length) {
+              finish('Wall cleared', `Perfect run — ${score} points with ${lives} ${lives === 1 ? 'life' : 'lives'} to spare.`);
+              return;
+            }
+            break;
+          }
+        }
+
+        if (ball.y - ball.r > H) {
+          lives -= 1;
+          updateHud();
+          if (lives <= 0) {
+            finish('Out of lives', `The wall held. You scored ${score} points — best on this device: ${best}.`);
+          } else {
+            resetBall();
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        // back wall glow
+        const glow = ctx.createLinearGradient(0, 0, 0, H);
+        glow.addColorStop(0, 'rgba(255, 47, 77, 0.08)');
+        glow.addColorStop(0.6, 'rgba(255, 47, 77, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, W, H);
+
+        bricks.forEach((brick) => {
+          ctx.save();
+          ctx.shadowColor = brick.color;
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = brick.color;
+          ctx.globalAlpha = 0.92;
+          roundRect(brick.x, brick.y, brick.w, brick.h, 4);
+          ctx.fill();
+          ctx.restore();
+
+          ctx.save();
+          ctx.globalAlpha = 0.28;
+          ctx.fillStyle = '#ffffff';
+          roundRect(brick.x + 2, brick.y + 2, brick.w - 4, Math.max(2, brick.h * 0.22), 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // paddle
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 47, 77, 0.85)';
+        ctx.shadowBlur = 20;
+        const paddleGradient = ctx.createLinearGradient(paddle.x, 0, paddle.x + paddle.w, 0);
+        paddleGradient.addColorStop(0, '#ff2f4d');
+        paddleGradient.addColorStop(0.5, '#ff8b9c');
+        paddleGradient.addColorStop(1, '#ff2f4d');
+        ctx.fillStyle = paddleGradient;
+        roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 6);
+        ctx.fill();
+        ctx.restore();
+
+        // ball
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.85)';
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = '#fff5f7';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        update(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      updateHud();
+      resize();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

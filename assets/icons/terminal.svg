@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Terminal">
+  <defs>
+    <linearGradient id="teBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#0a2a21"/>
+      <stop offset="1" stop-color="#040c09"/>
+    </linearGradient>
+    <linearGradient id="teFg" x1="16" y1="18" x2="48" y2="46">
+      <stop offset="0" stop-color="#c9ffe6"/>
+      <stop offset="1" stop-color="#46e58a"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#teBg)" stroke="#46e58a" stroke-opacity=".42"/>
+  <rect x="10" y="14" width="44" height="36" rx="5" fill="#04150f" stroke="url(#teFg)" stroke-width="2.2"/>
+  <path d="M16 22h3M21 22h3M26 22h3" stroke="#46e58a" stroke-width="2" stroke-linecap="round" stroke-opacity=".55"/>
+  <path d="m18 32 5 4-5 4" stroke="url(#teFg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M28 40h12" stroke="#7cf0b0" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

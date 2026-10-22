@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Settings">
+  <defs>
+    <linearGradient id="stBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#3a0d1a"/>
+      <stop offset="1" stop-color="#120509"/>
+    </linearGradient>
+    <linearGradient id="stFg" x1="20" y1="18" x2="44" y2="46">
+      <stop offset="0" stop-color="#ffe0e5"/>
+      <stop offset="1" stop-color="#ff4d63"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#stBg)" stroke="#ff2f4d" stroke-opacity=".42"/>
+  <circle cx="32" cy="32" r="8" stroke="url(#stFg)" stroke-width="2.4"/>
+  <path d="M32 13v5.5M32 45.5V51M13 32h5.5M45.5 32H51M18.6 18.6l3.9 3.9M41.5 41.5l3.9 3.9M45.4 18.6l-3.9 3.9M22.5 41.5l-3.9 3.9" stroke="url(#stFg)" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="18" stroke="#ff2f4d" stroke-opacity=".18" stroke-width="1"/>
+</svg>

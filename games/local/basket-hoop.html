@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Basket Hoop — Raevix Arcade</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      background:
+        radial-gradient(90% 60% at 50% -10%, rgba(255, 94, 60, 0.22), transparent 65%),
+        radial-gradient(70% 50% at 50% 110%, rgba(255, 47, 77, 0.16), transparent 70%),
+        #08040a;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="Basket Hoop game"></canvas>
+
+  <div class="hud">
+    <span>Score <b id="score">0</b></span>
+    <span class="hud__mid">Basket Hoop</span>
+    <span>Best <b id="best">0</b></span>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <p class="eyebrow">Raevix Arcade</p>
+      <h1>Basket Hoop</h1>
+      <p>Slide your aim along the court and fire as the rim drifts over you. Every bucket makes the hoop faster.</p>
+      <div class="keys">
+        <span>Mouse / ← →</span>
+        <span>Click</span>
+        <span>Space</span>
+        <span>Touch</span>
+      </div>
+      <button class="btn" id="startBtn" type="button">Tip off</button>
+    </div>
+  </div>
+
+  <p class="hint">One ball · endless shots · rim speeds up</p>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const bestEl = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const startBtn = document.getElementById('startBtn');
+
+      const GRAVITY = 1950;
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      let W = 0;
+      let H = 0;
+      let aimX = 0;
+      let hoopT = 0;
+      let hoopSpeed = 1.1;
+      let score = 0;
+      let attempts = 0;
+      let running = false;
+      let ball = null;
+      let flash = 0;
+      let best = Number(localStorage.getItem('raevix.hoop.best') || 0) || 0;
+
+      const hoopWidth = () => Math.max(52, Math.min(94, W * 0.17));
+      const hoopY = () => Math.max(76, Math.min(H * 0.24, 150));
+      const floorY = () => H - Math.max(52, H * 0.09);
+      const margin = () => hoopWidth() / 2 + 24;
+      const hoopX = () => {
+        const m = margin();
+        const span = Math.max(12, W - m * 2);
+        return m + (Math.sin(hoopT) * 0.5 + 0.5) * span;
+      };
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth || window.innerWidth;
+        H = canvas.clientHeight || window.innerHeight;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        aimX = clamp(aimX || W / 2, margin(), W - margin());
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(score);
+        bestEl.textContent = String(best);
+      }
+
+      function shoot() {
+        if (!running || ball) return;
+        attempts += 1;
+        const startY = floorY() - 18;
+        const rise = Math.max(90, startY - (hoopY() - 28));
+        ball = {
+          x: aimX,
+          y: startY,
+          prevY: startY,
+          vy: -Math.sqrt(2 * GRAVITY * rise),
+          scored: false,
+          trail: []
+        };
+      }
+
+      function setAim(x) {
+        aimX = clamp(x, margin(), W - margin());
+      }
+
+      function start() {
+        overlay.classList.add('hidden');
+        running = true;
+        score = 0;
+        attempts = 0;
+        hoopT = 0;
+        hoopSpeed = 1.1;
+        ball = null;
+        flash = 0;
+        updateHud();
+      }
+
+      startBtn.addEventListener('click', start);
+
+      canvas.addEventListener('pointermove', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        setAim(event.clientX - rect.left);
+      });
+
+      canvas.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        const rect = canvas.getBoundingClientRect();
+        setAim(event.clientX - rect.left);
+        shoot();
+      });
+
+      window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (key === 'arrowleft' || key === 'a') {
+          setAim(aimX - 28);
+          event.preventDefault();
+        } else if (key === 'arrowright' || key === 'd') {
+          setAim(aimX + 28);
+          event.preventDefault();
+        } else if (key === ' ' || key === 'enter') {
+          shoot();
+          event.preventDefault();
+        }
+      });
+
+      window.addEventListener('resize', resize);
+
+      function update(dt) {
+        if (!running) return;
+
+        hoopT += dt * hoopSpeed;
+        flash = Math.max(0, flash - dt * 2.4);
+
+        if (!ball) return;
+
+        ball.prevY = ball.y;
+        ball.vy += GRAVITY * dt;
+        ball.y += ball.vy * dt;
+
+        ball.trail.push({ x: ball.x, y: ball.y });
+        if (ball.trail.length > 12) ball.trail.shift();
+
+        if (!ball.scored && ball.vy > 0 && ball.prevY < hoopY() && ball.y >= hoopY()) {
+          const hx = hoopX();
+          const hw = hoopWidth();
+          if (Math.abs(ball.x - hx) < hw / 2 - 2) {
+            ball.scored = true;
+            score += 1;
+            flash = 1;
+            hoopSpeed = Math.min(3.4, hoopSpeed + 0.14);
+            if (score > best) {
+              best = score;
+              try { localStorage.setItem('raevix.hoop.best', String(best)); } catch (error) { /* storage may be blocked */ }
+              bestEl.textContent = String(best);
+            }
+            scoreEl.textContent = String(score);
+          }
+        }
+
+        if (ball.y > H + 80) ball = null;
+      }
+
+      function drawCourt() {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 47, 77, 0.18)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([6, 12]);
+        ctx.beginPath();
+        ctx.moveTo(0, floorY() + 20);
+        ctx.lineTo(W, floorY() + 20);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = 'rgba(255, 47, 77, 0.26)';
+        ctx.beginPath();
+        ctx.moveTo(0, floorY() + 20);
+        ctx.quadraticCurveTo(W / 2, floorY() + 100, W, floorY() + 20);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawHoop() {
+        const hx = hoopX();
+        const hy = hoopY();
+        const hw = hoopWidth();
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 47, 77, 0.85)';
+        ctx.shadowBlur = 18;
+        ctx.strokeStyle = '#ff4d63';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(hx, hy, hw / 2, 8, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 150, 165, 0.34)';
+        ctx.lineWidth = 1;
+        const left = hx - hw / 2 + 3;
+        const right = hx + hw / 2 - 3;
+        for (let i = 0; i <= 6; i += 1) {
+          const t = i / 6;
+          const topX = left + (right - left) * t;
+          const bottomX = hx - hw * 0.28 + hw * 0.56 * t;
+          ctx.beginPath();
+          ctx.moveTo(topX, hy);
+          ctx.lineTo(bottomX, hy + 26);
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.moveTo(hx - hw * 0.28, hy + 26);
+        ctx.lineTo(hx + hw * 0.28, hy + 26);
+        ctx.stroke();
+        ctx.restore();
+
+        if (flash > 0) {
+          ctx.save();
+          ctx.globalAlpha = flash * 0.55;
+          ctx.strokeStyle = '#ffe2e7';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.ellipse(hx, hy, hw / 2 + (1 - flash) * 26, 10 + (1 - flash) * 8, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function drawBall() {
+        if (!ball) {
+          if (!running) return;
+
+          ctx.save();
+          ctx.strokeStyle = 'rgba(255, 148, 163, 0.26)';
+          ctx.setLineDash([4, 8]);
+          ctx.beginPath();
+          ctx.moveTo(aimX, floorY() - 20);
+          ctx.lineTo(aimX, hoopY() + 30);
+          ctx.stroke();
+          ctx.restore();
+
+          ctx.save();
+          ctx.shadowColor = 'rgba(255, 47, 77, 0.8)';
+          ctx.shadowBlur = 16;
+          ctx.fillStyle = '#ff4d63';
+          ctx.beginPath();
+          ctx.arc(aimX, floorY() - 16, 13, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          ctx.save();
+          ctx.strokeStyle = 'rgba(255, 94, 112, 0.3)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(aimX - 26, floorY() + 3);
+          ctx.lineTo(aimX + 26, floorY() + 3);
+          ctx.stroke();
+          ctx.restore();
+          return;
+        }
+
+        ball.trail.forEach((point, index) => {
+          const t = index / ball.trail.length;
+          ctx.save();
+          ctx.globalAlpha = t * 0.28;
+          ctx.fillStyle = '#ff4d63';
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 10 * t, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 94, 112, 0.9)';
+        ctx.shadowBlur = 22;
+        const gradient = ctx.createRadialGradient(ball.x - 4, ball.y - 5, 2, ball.x, ball.y, 13);
+        gradient.addColorStop(0, '#ffd9df');
+        gradient.addColorStop(0.45, '#ff7a5c');
+        gradient.addColorStop(1, '#c4162f');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, 13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(30, 4, 10, 0.5)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, 13, 0.3, Math.PI - 0.3);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ball.x - 13, ball.y);
+        ctx.quadraticCurveTo(ball.x, ball.y + 4, ball.x + 13, ball.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        drawCourt();
+        drawHoop();
+        drawBall();
+      }
+
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        update(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      updateHud();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

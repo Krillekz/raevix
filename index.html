@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raevix — Unblocked Arcade OS</title>
+  <meta name="description" content="Raevix is a customizable neon desktop with a private browser, arcade, notes, terminal, paint, synth music, timers, task manager and a command palette. Zero installs. Credited to Raevik." />
+  <meta name="theme-color" content="#0a0508" />
+  <meta property="og:title" content="Raevix — Unblocked Arcade OS" />
+  <meta property="og:description" content="A futuristic browser desktop with a private browser, arcade, notes, terminal, paint, synth music, timers and a command palette. Credited to Raevik." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="assets/icons/start.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/css/theme.css" />
+  <link rel="stylesheet" href="src/css/windows.css" />
+  <link rel="stylesheet" href="src/css/apps.css" />
+</head>
+<body>
+  <div class="boot" id="boot" role="status" aria-live="polite">
+    <div class="boot__inner">
+      <div class="boot__mark"><img src="assets/icons/start.svg" alt="" /></div>
+      <p class="boot__title">RAEVIX<span>OS</span></p>
+      <p class="boot__sub">Booting the arcade desktop</p>
+      <div class="boot__bar"><i></i></div>
+      <button class="boot__skip" id="bootSkip" type="button">Skip intro</button>
+    </div>
+  </div>
+
+  <div class="desktop" id="desktop">
+    <div class="desktop__wallpaper" aria-hidden="true"></div>
+    <div class="desktop__anime" aria-hidden="true">
+      <div class="anime-scene anime-scene--idol">
+        <span class="anime-halo"></span>
+        <img class="anime-figure" src="assets/anime-idol.svg" alt="" draggable="false" />
+        <div class="anime-fx" data-fx="petals"></div>
+      </div>
+      <div class="anime-scene anime-scene--ronin">
+        <span class="anime-halo"></span>
+        <img class="anime-figure" src="assets/anime-ronin.svg" alt="" draggable="false" />
+        <div class="anime-fx" data-fx="embers"></div>
+      </div>
+    </div>
+    <div class="desktop__scanlines" aria-hidden="true"></div>
+
+    <header class="desk-brand">
+      <p class="desk-brand__logo">RAEVIX<span>OS</span></p>
+      <p class="desk-brand__tag">Unblocked arcade workspace</p>
+      <p class="desk-brand__chips">
+        <span><i></i>Local build</span>
+        <span>v2.0</span>
+      </p>
+    </header>
+
+    <main class="desktop__icons" id="desktopIcons" aria-label="Desktop shortcuts"></main>
+    <p class="desktop__hint" id="desktopHint">Double-click to launch · Ctrl+Shift+K commands · drag a window to the edge to snap</p>
+    <p class="desktop__badge">Credits to <strong>Raevik</strong></p>
+  </div>
+
+  <div class="windows-layer" id="windowsLayer"></div>
+
+  <div class="start-menu" id="startMenu" hidden>
+    <div class="start-menu__panel" role="dialog" aria-label="Start menu">
+      <header class="start-menu__head">
+        <div class="profile">
+          <img src="assets/avatar.svg" alt="" class="profile__avatar" />
+          <div class="profile__meta">
+            <strong>Raevik</strong>
+            <span>Guest session · local profile</span>
+          </div>
+        </div>
+        <p class="start-menu__status"><i></i>Online</p>
+      </header>
+
+      <label class="start-search">
+        <img src="assets/icons/search.svg" alt="" />
+        <input id="startSearch" type="search" placeholder="Search apps and games" autocomplete="off" spellcheck="false" />
+        <kbd>ESC</kbd>
+      </label>
+
+      <div class="start-menu__grid" id="startGrid"></div>
+      <p class="start-menu__empty" id="startEmpty" hidden>Nothing matches that search.</p>
+
+      <footer class="start-menu__foot">
+        <button class="reset-switch" id="resetSwitch" type="button" role="switch" aria-checked="false">
+          <span class="reset-switch__track"><i></i></span>
+          <span class="reset-switch__label">
+            <strong>System reset</strong>
+            <small>Clear local preferences and reload</small>
+          </span>
+        </button>
+        <p class="start-menu__credit">Raevix OS · credited to Raevik</p>
+      </footer>
+    </div>
+  </div>
+
+  <footer class="taskbar">
+    <div class="taskbar__apps" id="taskbarApps" aria-label="Open windows"></div>
+    <div class="taskbar__center">
+      <button class="cmd-btn" id="paletteBtn" type="button" title="Command palette (Ctrl+Shift+K)" aria-label="Open command palette">
+        <img src="assets/icons/search.svg" alt="" />
+      </button>
+      <button class="start-btn" id="startBtn" type="button" aria-expanded="false" aria-controls="startMenu">
+        <img src="assets/icons/start.svg" alt="" />
+        <span>Start</span>
+      </button>
+    </div>
+    <div class="taskbar__tray">
+      <p class="tray-status"><i></i><span>Secure</span></p>
+      <div class="clock" id="clock" title="System clock">
+        <span class="clock__time" id="clockTime">--:-- --</span>
+        <span class="clock__date" id="clockDate">—</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toasts" id="toastHost" aria-live="polite"></div>
+
+  <script type="module" src="src/js/main.js"></script>
+</body>
+</html>

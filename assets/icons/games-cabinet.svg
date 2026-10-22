@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Games Cabinet">
+  <defs>
+    <linearGradient id="gcBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#3a0e1b"/>
+      <stop offset="1" stop-color="#120509"/>
+    </linearGradient>
+    <linearGradient id="gcFg" x1="16" y1="20" x2="48" y2="46">
+      <stop offset="0" stop-color="#ffe0e5"/>
+      <stop offset="1" stop-color="#ff4d63"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#gcBg)" stroke="#ff2f4d" stroke-opacity=".42"/>
+  <path d="M22.5 20h19c3 0 5.4 2.2 5.9 5.2l1.7 10.6c.5 3.2-2 6.2-5.3 6.2-1.7 0-3.3-.8-4.3-2.2l-2.2-3H26.7l-2.2 3c-1 1.4-2.6 2.2-4.3 2.2-3.3 0-5.8-3-5.3-6.2l1.7-10.6C17.1 22.2 19.5 20 22.5 20Z" stroke="url(#gcFg)" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M24 55h16" stroke="url(#gcFg)" stroke-width="2.2" stroke-linecap="round" stroke-opacity=".55"/>
+  <path d="M26 28v6M23 31h6" stroke="#ff8b9c" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="39" cy="29" r="1.9" fill="#ff8b9c"/>
+  <circle cx="43" cy="33" r="1.9" fill="#ff8b9c"/>
+</svg>

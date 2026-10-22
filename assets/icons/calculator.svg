@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Calculator">
+  <defs>
+    <linearGradient id="caBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#1c1238"/>
+      <stop offset="1" stop-color="#080512"/>
+    </linearGradient>
+    <linearGradient id="caFg" x1="20" y1="14" x2="44" y2="50">
+      <stop offset="0" stop-color="#e6dcff"/>
+      <stop offset="1" stop-color="#9b7bff"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#caBg)" stroke="#9b7bff" stroke-opacity=".42"/>
+  <rect x="15" y="11" width="34" height="42" rx="5" fill="#120c24" stroke="url(#caFg)" stroke-width="2.2"/>
+  <path d="M21 20h22v6H21z" fill="#9b7bff" fill-opacity=".35"/>
+  <path d="M23 35h3M31 35h3M39 35h3M23 43h3M31 43h3M39 43h3" stroke="#c9baff" stroke-width="3" stroke-linecap="round"/>
+</svg>

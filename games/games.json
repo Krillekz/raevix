@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "updated": "2026-10-22",
+  "categories": ["Action", "Retro", "Sports", "Strategy", "Web Arcade"],
+  "games": [
+    {
+      "id": "basket-hoop",
+      "title": "Basket Hoop",
+      "category": "Sports",
+      "glyph": "🏀",
+      "accent": "#ff6a3d",
+      "blurb": "Timing · 1 player",
+      "controls": "Move: mouse or ← → · Shoot: click, tap or Space",
+      "url": "games/local/basket-hoop.html"
+    },
+    {
+      "id": "neon-breakout",
+      "title": "Neon Breakout",
+      "category": "Action",
+      "glyph": "🧱",
+      "accent": "#ff2f4d",
+      "blurb": "Arcade · 1 player",
+      "controls": "Paddle: mouse or ← → · Launch: click or Space",
+      "url": "games/local/neon-breakout.html"
+    },
+    {
+      "id": "void-runner",
+      "title": "Void Runner",
+      "category": "Action",
+      "glyph": "🚀",
+      "accent": "#ff9b3d",
+      "blurb": "Endless dodge · 1 player",
+      "controls": "Steer: mouse, ← → or drag · Collect orbs",
+      "url": "games/local/void-runner.html"
+    },
+    {
+      "id": "retro-snake",
+      "title": "Retro Snake",
+      "category": "Retro",
+      "glyph": "🐍",
+      "accent": "#46e58a",
+      "blurb": "Classic · 1 player",
+      "controls": "Arrows or WASD · swipe on touch",
+      "url": "games/local/retro-snake.html"
+    },
+    {
+      "id": "neon-pong",
+      "title": "Neon Pong",
+      "category": "Retro",
+      "glyph": "🏓",
+      "accent": "#48c6ff",
+      "blurb": "Versus CPU · first to 7",
+      "controls": "Mouse, W / S or ↑ / ↓",
+      "url": "games/local/neon-pong.html"
+    },
+    {
+      "id": "neon-2048",
+      "title": "Neon 2048",
+      "category": "Strategy",
+      "glyph": "🧩",
+      "accent": "#ffd34d",
+      "blurb": "Puzzle · 1 player",
+      "controls": "Arrows or WASD · swipe on touch",
+      "url": "games/local/neon-2048.html"
+    },
+    {
+      "id": "aura-unblocked",
+      "title": "Aura Unblocked",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🌐",
+      "accent": "#6ad8ff",
+      "blurb": "Web portal · large library",
+      "controls": "Opens the live portal inside Raevix · use its own game list",
+      "url": "https://weart1004-pixel.github.io/aura-unblocked/"
+    },
+    {
+      "id": "gamesunblockedplay",
+      "title": "Games Unblocked Play",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🕹️",
+      "accent": "#ff9b3d",
+      "blurb": "Web portal · instant play",
+      "controls": "Opens the live portal inside Raevix · pick any tile",
+      "url": "https://gamesunblockedplay.github.io/"
+    },
+    {
+      "id": "web-dashers",
+      "title": "Web Dashers",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🟨",
+      "accent": "#ffd34d",
+      "blurb": "Geometry Dash · web port",
+      "controls": "Opens the live game list inside Raevix · click a level",
+      "url": "https://komye-east.github.io/ublckdgms/gamelistgood.html"
+    },
+    {
+      "id": "sakura-os",
+      "title": "Sakura OS",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🌸",
+      "accent": "#ff8fc7",
+      "blurb": "Browser OS · games hub",
+      "controls": "Opens the live Sakura OS desktop inside Raevix",
+      "url": "https://itzmarineya.github.io/SakuraOS-UGB/SakuraOS%20v1.3.html"
+    },
+    {
+      "id": "ulas-unblocked",
+      "title": "UnblockedGames by Ula",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🎯",
+      "accent": "#8bff9b",
+      "blurb": "Web portal · curated picks",
+      "controls": "Opens the live portal inside Raevix · pick any game",
+      "url": "https://oriera26.github.io/unblocked-games/"
+    },
+    {
+      "id": "uncles-unblocked",
+      "title": "Uncle's Unblocked",
+      "category": "Web Arcade",
+      "web": true,
+      "glyph": "🧢",
+      "accent": "#b28dff",
+      "blurb": "Web portal · no-install games",
+      "controls": "Opens the live portal inside Raevix · pick any game",
+      "url": "https://mrbigbrain30.github.io/Uncle-s-Unblocked/"
+    }
+  ]
+}

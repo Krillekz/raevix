@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Neon Pong — Raevix Arcade</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      background:
+        radial-gradient(80% 60% at 50% -10%, rgba(72, 198, 255, 0.14), transparent 65%),
+        radial-gradient(70% 50% at 50% 110%, rgba(255, 47, 77, 0.14), transparent 70%),
+        #06040a;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="Neon Pong game"></canvas>
+
+  <div class="hud">
+    <span>You <b id="scoreP">0</b></span>
+    <span class="hud__mid">First to 7</span>
+    <span>CPU <b id="scoreA">0</b></span>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <p class="eyebrow">Raevix Arcade</p>
+      <h1 id="overlayTitle">Neon Pong</h1>
+      <p id="overlayText">First to seven takes the court. Deflect with the paddle edge to angle your return.</p>
+      <div class="keys" id="overlayKeys">
+        <span>Mouse / Touch</span>
+        <span>W / S</span>
+        <span>↑ / ↓</span>
+      </div>
+      <button class="btn" id="startBtn" type="button">Serve</button>
+    </div>
+  </div>
+
+  <p class="hint">Move the left paddle · first to seven</p>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scorePEl = document.getElementById('scoreP');
+      const scoreAEl = document.getElementById('scoreA');
+      const overlay = document.getElementById('overlay');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlayText = document.getElementById('overlayText');
+      const overlayKeys = document.getElementById('overlayKeys');
+      const startBtn = document.getElementById('startBtn');
+
+      const TARGET = 7;
+      const PADDLE_W = 12;
+      const INSET = 26;
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      let W = 0;
+      let H = 0;
+      let running = false;
+      let scoreP = 0;
+      let scoreA = 0;
+      let last = performance.now();
+      let placed = false;
+
+      const player = { y: 0 };
+      const ai = { y: 0 };
+      const ball = { x: 0, y: 0, r: 8, vx: 0, vy: 0 };
+      const keys = { up: false, down: false };
+
+      const paddleH = () => clamp(H * 0.18, 54, 104);
+      const playerX = () => INSET;
+      const aiX = () => W - INSET - PADDLE_W;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth || window.innerWidth;
+        H = canvas.clientHeight || window.innerHeight;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        if (!placed) {
+          player.y = H / 2 - paddleH() / 2;
+          ai.y = H / 2 - paddleH() / 2;
+          placed = true;
+        }
+
+        player.y = clamp(player.y, 0, Math.max(0, H - paddleH()));
+        ai.y = clamp(ai.y, 0, Math.max(0, H - paddleH()));
+
+        if (!running) {
+          ball.x = W / 2;
+          ball.y = H / 2;
+        }
+      }
+
+      function serve(direction) {
+        const speed = 400;
+        const angle = (Math.random() * 0.7) - 0.35;
+        ball.x = W / 2;
+        ball.y = H / 2;
+        ball.vx = Math.cos(angle) * speed * direction;
+        ball.vy = Math.sin(angle) * speed;
+      }
+
+      function updateHud() {
+        scorePEl.textContent = String(scoreP);
+        scoreAEl.textContent = String(scoreA);
+      }
+
+      function showOverlay(title, text, label, showKeys) {
+        overlayTitle.textContent = title;
+        overlayText.textContent = text;
+        startBtn.textContent = label;
+        overlayKeys.hidden = !showKeys;
+        overlay.classList.remove('hidden');
+      }
+
+      function startGame() {
+        overlay.classList.add('hidden');
+        scoreP = 0;
+        scoreA = 0;
+        updateHud();
+        player.y = H / 2 - paddleH() / 2;
+        ai.y = H / 2 - paddleH() / 2;
+        serve(Math.random() > 0.5 ? 1 : -1);
+        running = true;
+      }
+
+      startBtn.addEventListener('click', startGame);
+      window.addEventListener('resize', resize);
+
+      function bounce(paddleY, side) {
+        const ph = paddleH();
+        const speed = Math.min(820, Math.hypot(ball.vx, ball.vy) * 1.055);
+        const offset = clamp((ball.y - (paddleY + ph / 2)) / (ph / 2), -1, 1);
+        const angle = offset * 0.92;
+        ball.vx = Math.cos(angle) * speed * side;
+        ball.vy = Math.sin(angle) * speed;
+      }
+
+      function point(who) {
+        if (who === 'player') {
+          scoreP += 1;
+          updateHud();
+          if (scoreP >= TARGET) {
+            running = false;
+            showOverlay('Victory', `You took the set ${scoreP} : ${scoreA}. Cracked the CPU's neon defence.`, 'Play again', false);
+            return;
+          }
+          serve(1);
+        } else {
+          scoreA += 1;
+          updateHud();
+          if (scoreA >= TARGET) {
+            running = false;
+            showOverlay('CPU wins', `The CPU closed it out ${scoreA} : ${scoreP}. Run it back.`, 'Play again', false);
+            return;
+          }
+          serve(-1);
+        }
+      }
+
+      canvas.addEventListener('pointermove', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        player.y = clamp(event.clientY - rect.top - paddleH() / 2, 0, Math.max(0, H - paddleH()));
+      });
+
+      canvas.addEventListener('pointerdown', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        player.y = clamp(event.clientY - rect.top - paddleH() / 2, 0, Math.max(0, H - paddleH()));
+      });
+
+      window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (key === 'arrowup' || key === 'w') {
+          keys.up = true;
+          event.preventDefault();
+        } else if (key === 'arrowdown' || key === 's') {
+          keys.down = true;
+          event.preventDefault();
+        } else if (key === ' ' || key === 'enter') {
+          event.preventDefault();
+          if (!running) startGame();
+        }
+      });
+
+      window.addEventListener('keyup', (event) => {
+        const key = event.key.toLowerCase();
+        if (key === 'arrowup' || key === 'w') keys.up = false;
+        if (key === 'arrowdown' || key === 's') keys.down = false;
+      });
+
+      window.addEventListener('blur', () => {
+        keys.up = false;
+        keys.down = false;
+      });
+
+      function update(dt) {
+        if (!running) return;
+
+        const ph = paddleH();
+
+        if (keys.up) player.y -= 540 * dt;
+        if (keys.down) player.y += 540 * dt;
+        player.y = clamp(player.y, 0, Math.max(0, H - ph));
+
+        const target = ball.vx > 0 ? ball.y : H / 2;
+        const maxStep = 330 * dt;
+        ai.y += clamp(target - (ai.y + ph / 2), -maxStep, maxStep);
+        ai.y = clamp(ai.y, 0, Math.max(0, H - ph));
+
+        ball.x += ball.vx * dt;
+        ball.y += ball.vy * dt;
+
+        if (ball.y - ball.r < 0) {
+          ball.y = ball.r;
+          ball.vy = Math.abs(ball.vy);
+        } else if (ball.y + ball.r > H) {
+          ball.y = H - ball.r;
+          ball.vy = -Math.abs(ball.vy);
+        }
+
+        if (ball.vx < 0 && ball.x - ball.r <= playerX() + PADDLE_W && ball.x - ball.r >= playerX() - 6) {
+          if (ball.y > player.y && ball.y < player.y + ph) {
+            ball.x = playerX() + PADDLE_W + ball.r;
+            bounce(player.y, 1);
+          }
+        }
+
+        if (ball.vx > 0 && ball.x + ball.r >= aiX() && ball.x + ball.r <= aiX() + PADDLE_W + 6) {
+          if (ball.y > ai.y && ball.y < ai.y + ph) {
+            ball.x = aiX() - ball.r;
+            bounce(ai.y, -1);
+          }
+        }
+
+        if (ball.x < -40) point('ai');
+        else if (ball.x > W + 40) point('player');
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 94, 112, 0.12)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(9, 9, W - 18, H - 18);
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.setLineDash([9, 14]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(W / 2, 18);
+        ctx.lineTo(W / 2, H - 18);
+        ctx.stroke();
+        ctx.restore();
+
+        const ph = paddleH();
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 94, 112, 0.9)';
+        ctx.shadowBlur = 20;
+        const playerGradient = ctx.createLinearGradient(0, player.y, 0, player.y + ph);
+        playerGradient.addColorStop(0, '#ffe1e7');
+        playerGradient.addColorStop(0.5, '#ff5c73');
+        playerGradient.addColorStop(1, '#ff2f4d');
+        ctx.fillStyle = playerGradient;
+        ctx.beginPath();
+        ctx.roundRect(playerX(), player.y, PADDLE_W, ph, 6);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(72, 198, 255, 0.85)';
+        ctx.shadowBlur = 20;
+        const aiGradient = ctx.createLinearGradient(0, ai.y, 0, ai.y + ph);
+        aiGradient.addColorStop(0, '#dff4ff');
+        aiGradient.addColorStop(0.5, '#5cbcff');
+        aiGradient.addColorStop(1, '#2f7dff');
+        ctx.fillStyle = aiGradient;
+        ctx.beginPath();
+        ctx.roundRect(aiX(), ai.y, PADDLE_W, ph, 6);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+        ctx.shadowBlur = 22;
+        ctx.fillStyle = '#fff8fa';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.055;
+        ctx.font = '700 92px Orbitron, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ff2f4d';
+        ctx.fillText(String(scoreP), W * 0.3, H * 0.55);
+        ctx.fillStyle = '#48c6ff';
+        ctx.fillText(String(scoreA), W * 0.7, H * 0.55);
+        ctx.restore();
+      }
+
+      function loop(now) {
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        update(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      updateHud();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

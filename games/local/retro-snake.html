@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Retro Snake — Raevix Arcade</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      background:
+        radial-gradient(80% 60% at 50% -10%, rgba(70, 229, 138, 0.14), transparent 65%),
+        radial-gradient(60% 50% at 90% 110%, rgba(255, 47, 77, 0.12), transparent 70%),
+        #06040a;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" aria-label="Retro Snake game"></canvas>
+
+  <div class="hud">
+    <span>Score <b id="score">0</b></span>
+    <span class="hud__mid">Retro Snake</span>
+    <span>Best <b id="best">0</b></span>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <p class="eyebrow">Raevix Arcade</p>
+      <h1>Retro Snake</h1>
+      <p id="overlayText">Eat the glowing cores and keep growing. One wall or one tail bite ends the run.</p>
+      <div class="keys" id="overlayKeys">
+        <span>↑ ↓ ← →</span>
+        <span>WASD</span>
+        <span>Swipe</span>
+      </div>
+      <button class="btn" id="startBtn" type="button">Start run</button>
+    </div>
+  </div>
+
+  <p class="hint">Eat · grow · do not bite yourself</p>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById('game');
+      const ctx = canvas.getContext('2d');
+      const scoreEl = document.getElementById('score');
+      const bestEl = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const overlayText = document.getElementById('overlayText');
+      const overlayKeys = document.getElementById('overlayKeys');
+      const startBtn = document.getElementById('startBtn');
+
+      const COLS = 22;
+      const ROWS = 22;
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      let W = 0;
+      let H = 0;
+      let cell = 20;
+      let ox = 0;
+      let oy = 0;
+      let running = false;
+      let score = 0;
+      let stepMs = 130;
+      let acc = 0;
+      let dir = { x: 1, y: 0 };
+      let queued = { x: 1, y: 0 };
+      let snake = [];
+      let food = { x: 0, y: 0 };
+      let best = Number(localStorage.getItem('raevix.snake.best') || 0) || 0;
+      let last = performance.now();
+      let swipeStart = null;
+
+      function layout() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = canvas.clientWidth || window.innerWidth;
+        H = canvas.clientHeight || window.innerHeight;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        cell = Math.floor(Math.min(W, H - 46) / COLS);
+        cell = Math.max(8, cell);
+        ox = Math.floor((W - cell * COLS) / 2);
+        oy = Math.floor((H - cell * ROWS) / 2) + 8;
+      }
+
+      function roundRect(x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function spawnFood() {
+        for (let attempt = 0; attempt < 400; attempt += 1) {
+          const candidate = {
+            x: Math.floor(Math.random() * COLS),
+            y: Math.floor(Math.random() * ROWS)
+          };
+          if (!snake.some((segment) => segment.x === candidate.x && segment.y === candidate.y)) {
+            return candidate;
+          }
+        }
+        return null;
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(score);
+        bestEl.textContent = String(best);
+      }
+
+      function reset() {
+        snake = [
+          { x: 11, y: 11 },
+          { x: 10, y: 11 },
+          { x: 9, y: 11 }
+        ];
+        dir = { x: 1, y: 0 };
+        queued = { x: 1, y: 0 };
+        score = 0;
+        stepMs = 130;
+        acc = 0;
+        food = spawnFood() || { x: 5, y: 5 };
+        updateHud();
+      }
+
+      function showOverlay(title, text, label, showKeys) {
+        overlay.querySelector('h1').textContent = title;
+        overlayText.textContent = text;
+        startBtn.textContent = label;
+        overlayKeys.hidden = !showKeys;
+        overlay.classList.remove('hidden');
+      }
+
+      function gameOver() {
+        running = false;
+        best = Math.max(best, score);
+        try { localStorage.setItem('raevix.snake.best', String(best)); } catch (error) { /* ignore */ }
+        updateHud();
+        showOverlay('Snake down', `You scored ${score}. Best on this device: ${best}.`, 'Play again', false);
+      }
+
+      function startGame() {
+        overlay.classList.add('hidden');
+        reset();
+        running = true;
+        last = performance.now();
+      }
+
+      startBtn.addEventListener('click', startGame);
+      window.addEventListener('resize', layout);
+
+      function setDirection(next) {
+        if (!running) return;
+        if (next.x === -dir.x && next.y === -dir.y) return;
+        queued = next;
+      }
+
+      window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        const map = {
+          arrowup: { x: 0, y: -1 },
+          w: { x: 0, y: -1 },
+          arrowdown: { x: 0, y: 1 },
+          s: { x: 0, y: 1 },
+          arrowleft: { x: -1, y: 0 },
+          a: { x: -1, y: 0 },
+          arrowright: { x: 1, y: 0 },
+          d: { x: 1, y: 0 }
+        };
+
+        if (map[key]) {
+          setDirection(map[key]);
+          event.preventDefault();
+        } else if (key === ' ' || key === 'enter') {
+          event.preventDefault();
+          if (!running) startGame();
+        }
+      });
+
+      canvas.addEventListener('pointerdown', (event) => {
+        swipeStart = { x: event.clientX, y: event.clientY };
+      });
+
+      canvas.addEventListener('pointerup', (event) => {
+        if (!swipeStart) return;
+        const dx = event.clientX - swipeStart.x;
+        const dy = event.clientY - swipeStart.y;
+        swipeStart = null;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+        if (Math.abs(dx) > Math.abs(dy)) setDirection({ x: dx > 0 ? 1 : -1, y: 0 });
+        else setDirection({ x: 0, y: dy > 0 ? 1 : -1 });
+      });
+
+      canvas.addEventListener('pointercancel', () => {
+        swipeStart = null;
+      });
+
+      function step() {
+        dir = queued;
+        const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+        if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+          gameOver();
+          return;
+        }
+
+        const eating = food && head.x === food.x && head.y === food.y;
+        const body = eating ? snake : snake.slice(0, -1);
+
+        if (body.some((segment) => segment.x === head.x && segment.y === head.y)) {
+          gameOver();
+          return;
+        }
+
+        snake.unshift(head);
+
+        if (eating) {
+          score += 1;
+          stepMs = Math.max(66, stepMs - 3);
+          food = spawnFood();
+          if (score > best) {
+            best = score;
+            try { localStorage.setItem('raevix.snake.best', String(best)); } catch (error) { /* ignore */ }
+          }
+          updateHud();
+          if (!food) {
+            running = false;
+            showOverlay('Board cleared', `Every cell is snake. Unreal. Score ${score}.`, 'Play again', false);
+          }
+        } else {
+          snake.pop();
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        const backdrop = ctx.createRadialGradient(W / 2, H * 0.18, 20, W / 2, H * 0.5, Math.max(W, H) * 0.8);
+        backdrop.addColorStop(0, 'rgba(70, 229, 138, 0.07)');
+        backdrop.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = backdrop;
+        ctx.fillRect(0, 0, W, H);
+
+        const boardW = cell * COLS;
+        const boardH = cell * ROWS;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(9, 4, 12, 0.72)';
+        roundRect(ox - 8, oy - 8, boardW + 16, boardH + 16, 14);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 94, 112, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+        ctx.lineWidth = 1;
+        for (let i = 1; i < COLS; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(ox + i * cell, oy);
+          ctx.lineTo(ox + i * cell, oy + boardH);
+          ctx.stroke();
+        }
+        for (let i = 1; i < ROWS; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(ox, oy + i * cell);
+          ctx.lineTo(ox + boardW, oy + i * cell);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        if (food) {
+          const pulse = (Math.sin(performance.now() / 240) * 0.5 + 0.5);
+          const fx = ox + (food.x + 0.5) * cell;
+          const fy = oy + (food.y + 0.5) * cell;
+          ctx.save();
+          ctx.shadowColor = '#ff2f4d';
+          ctx.shadowBlur = 16 + pulse * 10;
+          ctx.fillStyle = '#ff4d63';
+          ctx.beginPath();
+          ctx.arc(fx, fy, cell * 0.28 + pulse * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        snake.forEach((segment, index) => {
+          const t = index / Math.max(1, snake.length - 1);
+          const x = ox + segment.x * cell;
+          const y = oy + segment.y * cell;
+          const pad = Math.max(1, cell * 0.08);
+
+          ctx.save();
+          if (index === 0) {
+            ctx.shadowColor = 'rgba(70, 229, 138, 0.9)';
+            ctx.shadowBlur = 18;
+            ctx.fillStyle = '#c9ffe2';
+          } else {
+            ctx.fillStyle = `hsl(${152 - t * 18}, ${78 - t * 38}%, ${58 - t * 24}%)`;
+          }
+          roundRect(x + pad, y + pad, cell - pad * 2, cell - pad * 2, Math.max(3, cell * 0.24));
+          ctx.fill();
+          ctx.restore();
+
+          if (index === 0) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(10, 40, 26, 0.7)';
+            const eye = Math.max(1.4, cell * 0.09);
+            ctx.beginPath();
+            ctx.arc(x + cell * 0.62, y + cell * 0.38, eye, 0, Math.PI * 2);
+            ctx.arc(x + cell * 0.62, y + cell * 0.62, eye, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+
+        // subtle vignette
+        ctx.save();
+        const vignette = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+        vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        vignette.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+
+      function loop(now) {
+        const dt = Math.min(now - last, 120);
+        last = now;
+
+        if (running) {
+          acc += dt;
+          while (acc >= stepMs) {
+            acc -= stepMs;
+            step();
+            if (!running) break;
+          }
+        }
+
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      layout();
+      reset();
+      updateHud();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

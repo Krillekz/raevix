@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Private Browser">
+  <defs>
+    <linearGradient id="pbBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#3a0e1b"/>
+      <stop offset="1" stop-color="#120509"/>
+    </linearGradient>
+    <linearGradient id="pbFg" x1="16" y1="16" x2="48" y2="48">
+      <stop offset="0" stop-color="#ffe0e5"/>
+      <stop offset="1" stop-color="#ff4d63"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#pbBg)" stroke="#ff2f4d" stroke-opacity=".42"/>
+  <circle cx="30" cy="30" r="14" stroke="url(#pbFg)" stroke-width="2.4"/>
+  <path d="M16 30h28M30 16c3.6 3.8 5.4 8.6 5.4 14S33.6 40.2 30 44c-3.6-3.8-5.4-8.6-5.4-14S26.4 19.8 30 16Z" stroke="url(#pbFg)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M39 35.6 49 39v5.4c0 4.4-3.5 7.5-10 9.2-6.5-1.7-10-4.8-10-9.2V39l10-3.4Z" fill="#120509" stroke="#ff8b9c" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M45 44.6v3.2" stroke="#7cf0b0" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="45" cy="42.2" r="1.4" fill="#7cf0b0"/>
+</svg>

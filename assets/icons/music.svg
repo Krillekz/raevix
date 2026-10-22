@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Music">
+  <defs>
+    <linearGradient id="muBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#2a0d2f"/>
+      <stop offset="1" stop-color="#0d0412"/>
+    </linearGradient>
+    <linearGradient id="muFg" x1="18" y1="14" x2="46" y2="50">
+      <stop offset="0" stop-color="#ffd9f6"/>
+      <stop offset="1" stop-color="#d05cff"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#muBg)" stroke="#d05cff" stroke-opacity=".42"/>
+  <path d="M26 44V20l20-4v24" stroke="url(#muFg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="21" cy="45" rx="5.4" ry="4.4" fill="#d05cff"/>
+  <ellipse cx="41" cy="41" rx="5.4" ry="4.4" fill="#ff8ae0"/>
+  <path d="M26 27l20-4" stroke="#ffb8f0" stroke-width="2.2" stroke-opacity=".8"/>
+</svg>

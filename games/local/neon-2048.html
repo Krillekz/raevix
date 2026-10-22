@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Neon 2048 — Raevix Arcade</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background:
+        radial-gradient(80% 60% at 50% -10%, rgba(255, 211, 77, 0.13), transparent 65%),
+        radial-gradient(70% 50% at 50% 110%, rgba(255, 47, 77, 0.14), transparent 70%),
+        #07040a;
+    }
+
+    .wrap {
+      display: grid;
+      gap: 12px;
+      width: min(430px, 92vw, calc(100vh - 140px));
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand .eyebrow {
+      margin: 0 0 3px;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #ff8b9c;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+      font-size: clamp(17px, 4.6vw, 22px);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .scores {
+      display: flex;
+      gap: 7px;
+      flex: none;
+    }
+
+    .scores span {
+      min-width: 58px;
+      padding: 5px 9px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 94, 112, 0.24);
+      background: rgba(255, 255, 255, 0.04);
+      text-align: center;
+      font-size: 8.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #b09aa2;
+    }
+
+    .scores b {
+      display: block;
+      margin-top: 2px;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      padding: 7px;
+      aspect-ratio: 1;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 94, 112, 0.3);
+      background: rgba(17, 7, 12, 0.88);
+      box-shadow: inset 0 0 40px rgba(255, 47, 77, 0.07), 0 26px 60px rgba(0, 0, 0, 0.5);
+      touch-action: none;
+    }
+
+    .cell {
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      font-family: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(14px, 5.2vw, 26px);
+      letter-spacing: -0.02em;
+      color: #f7ebee;
+      transition: background 0.12s ease, color 0.12s ease;
+      will-change: transform;
+    }
+
+    .cell[data-v=""] {
+      color: transparent;
+    }
+
+    .cell[data-v="2"] { background: #f0e2e6; color: #2a0d16; }
+    .cell[data-v="4"] { background: #f6cbd4; color: #2a0d16; }
+    .cell[data-v="8"] { background: #ff9b78; color: #2a0d16; }
+    .cell[data-v="16"] { background: #ff7a5c; color: #2a0d16; }
+    .cell[data-v="32"] { background: #ff5c6b; color: #fff4f6; }
+    .cell[data-v="64"] { background: #ff3050; color: #fff4f6; }
+    .cell[data-v="128"] { background: #ffd34d; color: #2a0d16; }
+    .cell[data-v="256"] { background: #ffbf3d; color: #2a0d16; }
+    .cell[data-v="512"] { background: #7dffb0; color: #082014; }
+    .cell[data-v="1024"] { background: #5dffd8; color: #082014; }
+    .cell[data-v="2048"] { background: #ffffff; color: #2a0d16; box-shadow: 0 0 28px rgba(255, 255, 255, 0.55); }
+    .cell[data-v="4096"], .cell[data-v="8192"] { background: #ffffff; color: #2a0d16; box-shadow: 0 0 28px rgba(255, 211, 77, 0.7); }
+
+    .cell.bump {
+      animation: bump 0.18s ease;
+    }
+
+    @keyframes bump {
+      0% { transform: scale(0.86); }
+      65% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    .help {
+      margin: 0;
+      text-align: center;
+      font-size: 9.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(176, 154, 162, 0.6);
+    }
+
+    @media (max-height: 520px) {
+      .help { display: none; }
+      .wrap { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <p class="eyebrow">Raevix Arcade</p>
+        <h1>Neon 2048</h1>
+      </div>
+      <div class="scores">
+        <span>Score <b id="score">0</b></span>
+        <span>Best <b id="best">0</b></span>
+      </div>
+    </header>
+    <div class="board" id="board" aria-label="2048 board"></div>
+    <p class="help">Arrow keys, WASD or swipe to merge tiles</p>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <p class="eyebrow">Raevix Arcade</p>
+      <h1 id="overlayTitle">Neon 2048</h1>
+      <p id="overlayText">Slide the board, merge matching tiles and chase the 2048 core. Every merge adds to your score.</p>
+      <div class="keys" id="overlayKeys">
+        <span>↑ ↓ ← →</span>
+        <span>WASD</span>
+        <span>Swipe</span>
+      </div>
+      <button class="btn" id="startBtn" type="button">Start puzzle</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const SIZE = 4;
+      const boardEl = document.getElementById('board');
+      const scoreEl = document.getElementById('score');
+      const bestEl = document.getElementById('best');
+      const overlay = document.getElementById('overlay');
+      const overlayTitle = document.getElementById('overlayTitle');
+      const overlayText = document.getElementById('overlayText');
+      const overlayKeys = document.getElementById('overlayKeys');
+      const startBtn = document.getElementById('startBtn');
+
+      let grid = emptyGrid();
+      let cells = [];
+      let previous = null;
+      let score = 0;
+      let best = Number(localStorage.getItem('raevix.2048.best') || 0) || 0;
+      let blocked = true;
+      let over = false;
+      let won = false;
+      let swipeStart = null;
+
+      function emptyGrid() {
+        return Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
+      }
+
+      function buildBoard() {
+        boardEl.replaceChildren();
+        cells = [];
+        for (let r = 0; r < SIZE; r += 1) {
+          for (let c = 0; c < SIZE; c += 1) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.v = '';
+            boardEl.append(cell);
+            cells.push(cell);
+          }
+        }
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(score);
+        bestEl.textContent = String(best);
+      }
+
+      function render() {
+        const snapshot = grid.map((row) => [...row]);
+
+        for (let r = 0; r < SIZE; r += 1) {
+          for (let c = 0; c < SIZE; c += 1) {
+            const value = grid[r][c];
+            const cell = cells[r * SIZE + c];
+            cell.dataset.v = value ? String(value) : '';
+            cell.textContent = value ? String(value) : '';
+
+            if (value && previous && previous[r][c] !== value) {
+              cell.classList.remove('bump');
+              void cell.offsetWidth;
+              cell.classList.add('bump');
+            }
+          }
+        }
+
+        previous = snapshot;
+      }
+
+      function emptyCells() {
+        const spots = [];
+        for (let r = 0; r < SIZE; r += 1) {
+          for (let c = 0; c < SIZE; c += 1) {
+            if (grid[r][c] === 0) spots.push([r, c]);
+          }
+        }
+        return spots;
+      }
+
+      function spawnTile() {
+        const spots = emptyCells();
+        if (!spots.length) return;
+        const [r, c] = spots[Math.floor(Math.random() * spots.length)];
+        grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+      }
+
+      function lineCoords(direction, index) {
+        const coords = [];
+        for (let i = 0; i < SIZE; i += 1) {
+          if (direction === 'left') coords.push([index, i]);
+          else if (direction === 'right') coords.push([index, SIZE - 1 - i]);
+          else if (direction === 'up') coords.push([i, index]);
+          else coords.push([SIZE - 1 - i, index]);
+        }
+        return coords;
+      }
+
+      function canMove() {
+        if (emptyCells().length) return true;
+        for (let r = 0; r < SIZE; r += 1) {
+          for (let c = 0; c < SIZE; c += 1) {
+            const value = grid[r][c];
+            if (c + 1 < SIZE && grid[r][c + 1] === value) return true;
+            if (r + 1 < SIZE && grid[r + 1][c] === value) return true;
+          }
+        }
+        return false;
+      }
+
+      function showOverlay(title, text, label, mode) {
+        overlayTitle.textContent = title;
+        overlayText.textContent = text;
+        startBtn.textContent = label;
+        startBtn.dataset.mode = mode;
+        overlayKeys.hidden = mode !== 'new';
+        overlay.classList.remove('hidden');
+      }
+
+      function newGame() {
+        grid = emptyGrid();
+        previous = null;
+        score = 0;
+        over = false;
+        won = false;
+        spawnTile();
+        spawnTile();
+        render();
+        updateHud();
+      }
+
+      function move(direction) {
+        if (blocked || over) return;
+
+        const before = grid.map((row) => [...row]);
+        let gained = 0;
+        let reached2048 = false;
+
+        for (let index = 0; index < SIZE; index += 1) {
+          const coords = lineCoords(direction, index);
+          const values = coords.map(([r, c]) => grid[r][c]).filter((value) => value !== 0);
+          const merged = [];
+
+          for (let i = 0; i < values.length; i += 1) {
+            if (i + 1 < values.length && values[i] === values[i + 1]) {
+              const value = values[i] * 2;
+              merged.push(value);
+              gained += value;
+              if (value === 2048) reached2048 = true;
+              i += 1;
+            } else {
+              merged.push(values[i]);
+            }
+          }
+
+          while (merged.length < SIZE) merged.push(0);
+          coords.forEach(([r, c], i) => {
+            grid[r][c] = merged[i];
+          });
+        }
+
+        const changed = grid.some((row, r) => row.some((value, c) => value !== before[r][c]));
+        if (!changed) return;
+
+        score += gained;
+        if (score > best) {
+          best = score;
+          try { localStorage.setItem('raevix.2048.best', String(best)); } catch (error) { /* ignore */ }
+        }
+
+        spawnTile();
+        render();
+        updateHud();
+
+        if (reached2048 && !won) {
+          won = true;
+          blocked = true;
+          showOverlay('2048 reached!', `You merged the core with ${score} points. Keep sliding for a higher score.`, 'Keep going', 'resume');
+          return;
+        }
+
+        if (!canMove()) {
+          over = true;
+          blocked = true;
+          showOverlay('No moves left', `Final score ${score}. Best on this device: ${best}.`, 'New game', 'new');
+        }
+      }
+
+      startBtn.addEventListener('click', () => {
+        overlay.classList.add('hidden');
+
+        if (startBtn.dataset.mode === 'resume') {
+          blocked = false;
+          return;
+        }
+
+        newGame();
+        blocked = false;
+        over = false;
+      });
+
+      const keyMap = {
+        arrowleft: 'left',
+        a: 'left',
+        arrowright: 'right',
+        d: 'right',
+        arrowup: 'up',
+        w: 'up',
+        arrowdown: 'down',
+        s: 'down'
+      };
+
+      window.addEventListener('keydown', (event) => {
+        const direction = keyMap[event.key.toLowerCase()];
+        if (direction) {
+          event.preventDefault();
+          move(direction);
+        }
+      });
+
+      window.addEventListener('pointerdown', (event) => {
+        swipeStart = { x: event.clientX, y: event.clientY };
+      });
+
+      window.addEventListener('pointerup', (event) => {
+        if (!swipeStart) return;
+        const dx = event.clientX - swipeStart.x;
+        const dy = event.clientY - swipeStart.y;
+        swipeStart = null;
+
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+        if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
+        else move(dy > 0 ? 'down' : 'up');
+      });
+
+      buildBoard();
+      render();
+      updateHud();
+      startBtn.dataset.mode = 'new';
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="LunarX">
+  <defs>
+    <linearGradient id="lxBg" x1="6" y1="2" x2="58" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d1033"/>
+      <stop offset="1" stop-color="#0a0614"/>
+    </linearGradient>
+    <linearGradient id="lxFg" x1="20" y1="12" x2="46" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe6b0"/>
+      <stop offset=".55" stop-color="#ffb86b"/>
+      <stop offset="1" stop-color="#ff7ab8"/>
+    </linearGradient>
+    <mask id="lxMoonMask">
+      <rect width="64" height="64" fill="#000"/>
+      <circle cx="30" cy="30" r="15" fill="#fff"/>
+      <circle cx="39" cy="24" r="14" fill="#000"/>
+    </mask>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#lxBg)" stroke="#b06bff" stroke-opacity=".45"/>
+  <rect x="3.5" y="3.5" width="57" height="57" rx="15" fill="url(#lxFg)" mask="url(#lxMoonMask)"/>
+  <circle cx="44" cy="17" r="1.7" fill="#ffe6b0"/>
+  <circle cx="49" cy="23" r="1.1" fill="#ffd0e4" opacity=".8"/>
+  <path d="M42 40 44.2 45.2 49.8 45.4 45.4 48.9 46.8 54.3 42 51.3 37.2 54.3 38.6 48.9 34.2 45.4 39.8 45.2Z" fill="#b06bff" fill-opacity=".8"/>
+  <path d="M18 45.5h6" stroke="#8ff2ff" stroke-width="2" stroke-linecap="round" stroke-opacity=".7"/>
+</svg>

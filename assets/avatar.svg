@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Raevix profile avatar">
+  <defs>
+    <radialGradient id="avBg" cx=".35" cy=".2" r=".9">
+      <stop offset="0" stop-color="#f1355a"/>
+      <stop offset=".55" stop-color="#7b0f22"/>
+      <stop offset="1" stop-color="#1b0710"/>
+    </radialGradient>
+    <linearGradient id="avFg" x1="24" y1="30" x2="72" y2="86">
+      <stop offset="0" stop-color="#ffe6ea"/>
+      <stop offset="1" stop-color="#ff9cab"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="26" fill="url(#avBg)"/>
+  <circle cx="48" cy="38" r="15" fill="url(#avFg)" fill-opacity=".92"/>
+  <path d="M17 89c3.5-17 15.5-26 31-26s27.5 9 31 26Z" fill="url(#avFg)" fill-opacity=".8"/>
+  <rect x="1" y="1" width="94" height="94" rx="25" fill="none" stroke="#ffb3bf" stroke-opacity=".45" stroke-width="1.6"/>
+</svg>
