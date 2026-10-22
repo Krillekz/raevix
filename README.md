@@ -2,6 +2,8 @@
 
 A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a Games Cabinet that mixes six original HTML5 titles with six live web-game portals. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
 
+**Live:** <https://krillekz.github.io/raevix/>
+
 > **Credits:** Raevik
 
 ---
@@ -256,6 +258,8 @@ Many popular sites send `X-Frame-Options: DENY/SAMEORIGIN` or CSP `frame-ancesto
 ---
 
 ## Deploy to GitHub Pages
+
+This repository is published from the `main` branch at <https://krillekz.github.io/raevix/>. Every push to `main` rebuilds the site.
 
 ### Fast route — `deploy.bat`
 
