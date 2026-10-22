@@ -167,7 +167,7 @@ function loadGames() {
     .then((library) => {
       const gameItems = library.games.map((game) => ({
         title: game.title,
-        meta: `${game.category}${game.web ? ' · live portal' : ''}`,
+        meta: `${game.category}${game.provider ? ' · web game' : game.web ? ' · live portal' : ''}`,
         icon: 'assets/icons/games-cabinet.svg',
         group: 'Games',
         run: () => openGame(game)

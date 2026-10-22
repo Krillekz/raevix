@@ -41,6 +41,7 @@ function normalize(raw) {
       blurb: typeof game.blurb === 'string' ? game.blurb : 'Arcade',
       controls: typeof game.controls === 'string' ? game.controls : '',
       web: game.web === true,
+      provider: typeof game.provider === 'string' ? game.provider : '',
       url: String(game.url)
     }));
 
@@ -133,6 +134,10 @@ export function mountGamesCabinet(body) {
       </div>
       <div class="cabinet__grid" id="cabinetGrid"></div>
       <p class="cabinet__empty" id="cabinetEmpty" hidden>No titles match that filter.</p>
+      <div class="cabinet__more" id="cabinetMore" hidden>
+        <button class="btn" id="cabinetMoreBtn" type="button">Show more games</button>
+        <span class="cabinet__morehint" id="cabinetMoreHint"></span>
+      </div>
     </div>
   `;
 
@@ -143,12 +148,18 @@ export function mountGamesCabinet(body) {
   const searchEl = body.querySelector('#cabinetSearch');
   const resultEl = body.querySelector('#cabinetResult');
   const emptyEl = body.querySelector('#cabinetEmpty');
+  const moreEl = body.querySelector('#cabinetMore');
+  const moreBtn = body.querySelector('#cabinetMoreBtn');
+  const moreHint = body.querySelector('#cabinetMoreHint');
 
+  const PAGE_SIZE = 60;
   let library = null;
   let activeCategory = 'All';
+  let shown = PAGE_SIZE;
 
-  const render = () => {
+  const render = ({ reset = false } = {}) => {
     if (!library) return;
+    if (reset) shown = PAGE_SIZE;
 
     const query = searchEl.value.trim().toLowerCase();
     const visible = library.games.filter((game) => {
@@ -157,7 +168,7 @@ export function mountGamesCabinet(body) {
       return inCategory && matches;
     });
 
-    gridEl.replaceChildren(...visible.map(createCard));
+    gridEl.replaceChildren(...visible.slice(0, shown).map(createCard));
     gridEl.hidden = visible.length === 0;
     emptyEl.hidden = visible.length > 0;
     countEl.textContent = String(visible.length);
@@ -165,9 +176,20 @@ export function mountGamesCabinet(body) {
       ? `${visible.length} of ${library.games.length} titles`
       : `${visible.length} showing`;
 
+    // A 500-title shelf is rendered a page at a time so opening stays instant.
+    const remaining = visible.length - shown;
+    if (moreEl) {
+      moreEl.hidden = remaining <= 0;
+      if (remaining > 0) {
+        moreBtn.textContent = `Show ${Math.min(PAGE_SIZE, remaining)} more`;
+        moreHint.textContent = `${shown} of ${visible.length} on screen`;
+      }
+    }
+
     const local = library.games.filter((game) => !game.web).length;
-    const web = library.games.filter((game) => game.web).length;
-    subEl.textContent = `${local} local · ${web} live web portals · sandboxed iframe runtime`;
+    const hosted = library.games.filter((game) => game.provider).length;
+    const portals = library.games.filter((game) => game.web && !game.provider).length;
+    subEl.textContent = `${local} built-in · ${hosted} GameMonetize · ${portals} portals · sandboxed iframe runtime`;
   };
 
   getLibrary()
@@ -188,13 +210,17 @@ export function mountGamesCabinet(body) {
             button.classList.toggle('is-active', selected);
             button.setAttribute('aria-selected', String(selected));
           });
-          render();
+          render({ reset: true });
         });
         return tab;
       });
 
       tabsEl.replaceChildren(...tabs);
-      searchEl.addEventListener('input', render);
+      searchEl.addEventListener('input', () => render({ reset: true }));
+      moreBtn?.addEventListener('click', () => {
+        shown += PAGE_SIZE;
+        render();
+      });
       render();
     })
     .catch((error) => {

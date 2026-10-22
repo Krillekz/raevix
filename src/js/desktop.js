@@ -17,6 +17,7 @@ const SHORTCUTS = [
   { label: 'LunarX', icon: 'assets/icons/lunarx.svg', app: 'lunarx' },
   { label: 'Quick Guide', icon: 'assets/icons/guide.svg', app: 'guide' },
   { label: 'Proxy Mock', icon: 'assets/icons/proxy-mock.svg', app: 'proxy' },
+  { label: 'Extensions', icon: 'assets/icons/extensions.svg', app: 'extensions' },
   { label: 'Settings', icon: 'assets/icons/settings.svg', app: 'settings' },
   { label: 'Trash Bin', icon: 'assets/icons/trash.svg', app: 'trash' }
 ];

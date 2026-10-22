@@ -41,9 +41,19 @@ const SECTIONS = [
     ]
   },
   {
+    title: 'Chrome extensions',
+    rows: [
+      ['Store pages', 'Extension Picks links eight add-ons to their official Chrome Web Store listings — press Add to Chrome there.'],
+      ['No silent installs', 'A web page cannot install extensions into a Google account. Chrome asks you to confirm every install.'],
+      ['Sync', 'Stay signed in to Chrome with the same Google account and enable sync; installed extensions follow you.'],
+      ['Managed accounts', 'Only a Workspace administrator can force-install extensions on a school or work account.'],
+      ['Installed', 'Chrome does not expose the installed-extension list to websites, so this window cannot verify or remove them.']
+    ]
+  },
+  {
     title: 'Arcade and shortcuts',
     rows: [
-      ['Cabinet', 'Local games plus six web portals. The search field and category tabs filter the shelf.'],
+      ['Cabinet', '512 titles: six built-in games, six web portals and a 500-game GameMonetize catalog. Search and category tabs filter the shelf.'],
       ['Wikipedia & Archive', 'These open straight inside a Private Browser window, already on the page.'],
       ['LunarX', 'Opens in a new tab: the site refuses embedding and sits behind a Cloudflare check.']
     ]
@@ -75,7 +85,7 @@ export function mountGuide(body) {
 
       ${sections}
 
-      <p class="guide__foot">Raevix OS v2.0 · artwork and code by Raevik</p>
+      <p class="guide__foot">Raevix OS v2.1 · artwork and code by Raevik</p>
     </div>
   `;
 }

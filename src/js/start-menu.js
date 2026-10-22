@@ -1,6 +1,6 @@
 /** Start menu: animated drawer, search, app/game grid and the system reset switch. */
 
-import { getAppList } from './apps.js';
+import { getAppList, openApp } from './apps.js';
 import { getLibrary, openGame } from './games.js';
 import { resetSettings } from './settings.js';
 import { confirmDialog, escapeHtml, toast } from './ui.js';
@@ -15,35 +15,63 @@ export function initStartMenu() {
 
   if (!menu || !startBtn || !grid || !search) return;
 
-  let items = getAppList();
+  let appItems = getAppList();
+  let gameItems = [];
   let isOpen = false;
   let hideTimer = 0;
 
+  const makeItem = (item) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'start-item';
+    button.innerHTML = `
+      <img src="${item.icon}" alt="" draggable="false" />
+      <span class="start-item__meta">
+        <strong>${escapeHtml(item.title)}</strong>
+        <small>${escapeHtml(item.meta)}</small>
+      </span>
+    `;
+    button.addEventListener('click', () => {
+      closeMenu();
+      item.run();
+    });
+    return button;
+  };
+
   const render = () => {
     const query = search.value.trim().toLowerCase();
-    const matches = query
-      ? items.filter((item) => `${item.title} ${item.meta}`.toLowerCase().includes(query))
-      : items;
+    const matches = (list) => (query
+      ? list.filter((item) => `${item.title} ${item.meta}`.toLowerCase().includes(query))
+      : list);
 
-    grid.replaceChildren(...matches.map((item) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'start-item';
-      button.innerHTML = `
-        <img src="${item.icon}" alt="" draggable="false" />
+    const apps = matches(appItems);
+    const games = matches(gameItems);
+    const gamesShown = games.slice(0, query ? 30 : 6);
+    const cards = [...apps, ...gamesShown].map(makeItem);
+
+    // The cabinet holds hundreds of titles; the Start menu shows the first few
+    // and links to the full shelf instead of building every tile.
+    if (games.length > gamesShown.length) {
+      const browse = document.createElement('button');
+      browse.type = 'button';
+      browse.className = 'start-item';
+      browse.title = 'Open the full Games Cabinet';
+      browse.innerHTML = `
+        <img src="assets/icons/games-cabinet.svg" alt="" draggable="false" />
         <span class="start-item__meta">
-          <strong>${escapeHtml(item.title)}</strong>
-          <small>${escapeHtml(item.meta)}</small>
+          <strong>All ${games.length} games</strong>
+          <small>Browse the cabinet</small>
         </span>
       `;
-      button.addEventListener('click', () => {
+      browse.addEventListener('click', () => {
         closeMenu();
-        item.run();
+        openApp('games');
       });
-      return button;
-    }));
+      cards.push(browse);
+    }
 
-    if (empty) empty.hidden = matches.length > 0;
+    grid.replaceChildren(...cards);
+    if (empty) empty.hidden = cards.length > 0;
   };
 
   const openMenu = () => {
@@ -102,14 +130,14 @@ export function initStartMenu() {
   // Load the arcade titles once and merge them into the master grid.
   getLibrary()
     .then((library) => {
-      const gameItems = library.games.map((game) => ({
+      gameItems = library.games.map((game) => ({
         id: `game:${game.id}`,
         title: game.title,
         meta: `Game · ${game.category}`,
         icon: 'assets/icons/games-cabinet.svg',
         run: () => openGame(game)
       }));
-      items = [...getAppList(), ...gameItems];
+
       if (isOpen) render();
     })
     .catch((error) => console.warn('[Raevix] start menu games unavailable', error));

@@ -1005,14 +1005,34 @@
 }
 
 .game-card__meta strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
 
 .game-card__meta small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 10.5px;
   color: var(--muted);
+}
+
+.cabinet__more {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 2px 0 12px;
+}
+
+.cabinet__morehint {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-dim);
 }
 
 /* Game runner window ------------------------------------------------------ */

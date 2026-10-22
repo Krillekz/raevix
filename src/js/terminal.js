@@ -143,8 +143,10 @@ export function mountTerminal(body, win) {
 
       case 'games': {
         const library = await getLibrary();
-        printColumns(library.games.map((game, index) => [`${String(index + 1).padStart(2, ' ')}. ${game.id}`, `${game.title} · ${game.category}${game.web ? ' · live web' : ''}`]));
-        print('Launch with: play <id>', 'dim');
+        const shown = library.games.slice(0, 40);
+        printColumns(shown.map((game, index) => [`${String(index + 1).padStart(2, ' ')}. ${game.id}`, `${game.title} · ${game.category}${game.provider ? ' · web' : game.web ? ' · live web' : ''}`]));
+        print(`${library.games.length} titles in the cabinet — showing the first 40.`, 'dim');
+        print('Launch with: play <id>, or browse everything in the Games Cabinet.', 'dim');
         break;
       }
 
@@ -362,7 +364,7 @@ export function mountTerminal(body, win) {
           <pre class="term__ascii">   ▄▄▄▄▄▄▄▄▄
   █  R A E V I X  █   <span class="term__accent">raevik@desktop</span>
    ▀▀▀▀▀▀▀▀▀▀▀▀▀    <span class="term__dim">---------------</span>
-                     <span class="term__dim">OS</span>      Raevix OS 2.0
+                     <span class="term__dim">OS</span>      Raevix OS 2.1
                      <span class="term__dim">Shell</span>   raevix-sh
                      <span class="term__dim">Uptime</span>  ${bootTime()}
                      <span class="term__dim">Accent</span>  ${escapeHtml(settings.accent)} ${getAccentColor()}
@@ -431,7 +433,7 @@ export function mountTerminal(body, win) {
     window.requestAnimationFrame(() => input.focus({ preventScroll: true }));
   });
 
-  print('Raevix shell 2.0 — local guest session', 'accent');
+  print('Raevix shell 2.1 — local guest session', 'accent');
   print('Type “help” for commands, or “neofetch” for the flex.', 'dim');
   print('');
   input.focus({ preventScroll: true });

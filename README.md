@@ -1,6 +1,6 @@
 # Raevix OS — Unblocked Arcade Desktop
 
-A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a Games Cabinet that mixes six original HTML5 titles with six live web-game portals. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
+A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a **512-title Games Cabinet** — six original HTML5 games, six live web portals and a 500-game GameMonetize catalog. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — plus a Chrome **Extension Picks** window make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
 
 **Live:** <https://krillekz.github.io/raevix/>
 
@@ -17,10 +17,11 @@ A futuristic, fully responsive **single-page desktop environment** for the brows
 - **Lock screen, context menu and shortcut sheet** — `Ctrl + Shift + L` locks the desktop behind a blurred overlay. Right-click the wallpaper for a quick menu, and `Ctrl + /` lists every shortcut.
 - **Seven new apps** — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager. All offline, all keyboard friendly, all living in real windows.
 - **Interface sounds** — short synthesised cues for launches, errors and timer alarms, switchable in Settings.
-- **Start menu** — animated drawer with live app search (Enter opens the first result), a master grid of every app **and** every game, a profile slot and a two-step **system reset** switch.
+- **Start menu** — animated drawer with live search across every app and all 512 games (Enter opens the first result), six featured game tiles plus a link to the full cabinet, a profile slot and a two-step **system reset** switch.
 - **Taskbar** — centered Start trigger, open-window chips on the left, and an auto-updating 12-hour clock (24-hour optional in Settings).
 - **Private Browser** — an incognito-style shell with an address bar, back / forward / reload / home, session-only pins and a one-click session wipe. History and bookmarks live in memory; nothing is written to storage.
-- **Games Cabinet** — searchable, filterable storefront (All / Action / Retro / Sports / Strategy / Web Arcade) with 12 titles: six original games plus six live portals wired from the desktop shortcuts. Each launches in its own sandboxed iframe window with reload + open-standalone controls.
+- **Games Cabinet** — searchable, filterable storefront (All / Action / Arcade / Puzzle / Racing / Adventure / Sports / Multiplayer / Casual / Retro / Strategy / Web Arcade) with **512 titles**: six original games, six live portals and 500 GameMonetize games. The shelf renders 60 cards at a time so opening stays instant; category counts, search and a **Show more** button cover the rest. Every title launches in its own sandboxed iframe window with reload + open-standalone controls.
+- **Chrome Extension Picks** — a desktop app and shortcut that links eight vetted extensions (uBlock Origin, Dark Reader, Bitwarden, SponsorBlock, Privacy Badger, Tampermonkey, Video Speed Controller, Google Translate) to their official Chrome Web Store listings. It explains plainly that a page cannot install extensions into a Google account or browser profile; Chrome requires a click on **Add to Chrome** for each one, and Workspace admins can force-install through enterprise policy.
 - **Proxy Mock** — an honest, clearly labelled mock browser shell with a working address bar and quick links. It does not tunnel traffic; the panel explains how to attach a real server-side proxy.
 - **Customization** — six accent presets plus a full colour picker, six wallpapers, neon glow, scanline overlay, motion, sounds, clock and session preferences. Everything is saved and re-applied on boot.
 - **Working terminal** — `raevix-sh` opens apps and games, writes notes, evaluates maths, switches accent or wallpaper, inspects windows, locks the session and prints a `neofetch`. Tab completion and command history included.
@@ -31,6 +32,7 @@ A futuristic, fully responsive **single-page desktop environment** for the brows
 - **Accessible & responsive** — keyboard-openable shortcuts, themed focus rings, Escape-to-close menus, and a full-width layout down to small phones.
 - **6 built-in games** — Basket Hoop, Neon Breakout, Void Runner, Retro Snake, Neon Pong and Neon 2048. Canvas/DOM games with keyboard, mouse and touch input plus local high scores.
 - **6 web portals** — Aura Unblocked, Games Unblocked Play, Web Dashers, Sakura OS, UnblockedGames by Ula and Uncle's Unblocked. All six were checked for framing headers and open inside a sandboxed window.
+- **500 hosted games** — a snapshot of the public GameMonetize feed, filtered to drop shooting, adult and gambling categories and titles. They load from `html5.gamemonetize.co` inside the same sandboxed window as the portals. GameMonetize can change or retire a title, so a stale entry falls back to the window's **Open** button.
 
 ---
 
@@ -57,6 +59,7 @@ Raevix/
 │     ├─ games.js             # Library loader, Games Cabinet, iframe launcher
 │     ├─ browser.js           # Session-only Private Browser app
 │     ├─ guide.js             # Quick Guide help window
+│     ├─ extensions.js        # Chrome extension picks and store links
 │     ├─ apps.js              # App registry, Settings, Proxy Mock, Trash
 │     ├─ notes.js             # Persistent notebook
 │     ├─ calculator.js        # Calculator UI, tape and keyboard input
@@ -76,7 +79,7 @@ Raevix/
 │  ├─ avatar.svg              # Start menu profile graphic
 │  └─ icons/                  # Shortcut, Start and app icons
 └─ games/
-   ├─ games.json              # 12-title library: 6 local games + 6 web portals
+   ├─ games.json              # 512-title library: 6 local + 6 portals + 500 hosted
    └─ local/                  # Six self-contained HTML5 games
       ├─ shared.css
       ├─ basket-hoop.html
@@ -173,6 +176,21 @@ A **web portal** is the same entry with `"web": true`. It gets a LIVE badge, an 
 
 Only embed pages whose operators permit framing. GitHub Pages serves no `X-Frame-Options` by default, so the bundled portals work; a site can change that at any time.
 
+Hosted games use the same shape with an extra `"provider"` label. The 500 GameMonetize entries were generated from its public feed, filtered against shooting, adult and gambling categories, and baked into `games.json` so the site itself stays static:
+
+```json
+{
+  "id": "gm-88849",
+  "title": "Splash Rivals",
+  "category": "Arcade",
+  "web": true,
+  "provider": "GameMonetize",
+  "blurb": "Team paint shooter",
+  "controls": "WASD move · mouse aim · click fire",
+  "url": "https://html5.gamemonetize.co/…/"
+}
+```
+
 Each game is rendered inside a sandboxed iframe:
 
 ```html
@@ -180,7 +198,7 @@ Each game is rendered inside a sandboxed iframe:
         allow="autoplay; fullscreen; gamepad" referrerpolicy="no-referrer"></iframe>
 ```
 
-**Why original games plus portals, instead of individual titles from big portals?** Popular portals such as CrazyGames and Poki serve their game pages with `X-Frame-Options: SAMEORIGIN`, so those pages cannot be framed from another domain. The Web Arcade entries here are GitHub Pages portals that do permit framing; each opens as a live page inside its own window. If you find a specific embeddable game page, add its URL to `games.json` the same way. Only embed content you have the right to distribute.
+**Why these sources, instead of individual titles from big portals?** Popular portals such as CrazyGames and Poki serve their game pages with `X-Frame-Options: SAMEORIGIN`, so those pages cannot be framed from another domain. The Web Arcade entries are GitHub Pages portals that do permit framing, and GameMonetize's distribution feed is built for embedding. If you find a specific embeddable game page, add its URL to `games.json` the same way. Only embed content you have the right to distribute, and check the provider's terms before monetising.
 
 ### Adding an app
 
@@ -219,6 +237,7 @@ Preferences live under the `raevix.settings.v1` localStorage key. **Reset all pr
 | **Music** | Three original WebAudio chiptune loops (Neon Skyline, Sakura Circuit, Midnight Ronin) with play/pause, next/previous, volume and a live spectrum. Nothing is streamed or sampled. |
 | **Clock & Timers** | Analog and digital local clock, four world zones, a stopwatch with laps, and a countdown timer with presets and a synthesised alarm. |
 | **Task Manager** | Measures real frame rate, JS heap (where exposed), localStorage usage, uptime and DOM size, and can focus, minimise, maximise or close every open window. |
+| **Extensions** | Eight Chrome extension picks with one-click links to their official Web Store pages, a copy-the-list button, Chrome sync guidance and the managed-account policy link. It cannot install anything itself — no website can. |
 
 Local keys used by the new apps: `raevix.notes.v1`, `raevix.calc.history.v1`, `raevix.music.volume` and `raevix.session.v1` (the restore list). All are device-local and can be cleared with **Reset all preferences** or the Start-menu reset.
 
@@ -347,6 +366,8 @@ GitHub Pages rebuilds automatically on every push to `main`.
 | Music is silent | Browsers only start audio after a click; press play inside the Music window. |
 | Unwanted windows reopen | Turn off **Restore windows** in Settings → Session. |
 | A web portal is blank | The portal can change its framing policy or go offline. Use the window's **Open** button, or remove its entry from `games.json`. |
+| A hosted game is blank | GameMonetize retired or moved that title. Use **Open** to load it in a tab, or delete its entry. The other 499 are unaffected. |
+| Extensions did not install | Expected: a page cannot install extensions. Each card opens the store listing, where you press **Add to Chrome** and confirm. |
 | LunarX did not open | It opens in a new tab and needs pop-ups allowed for Raevix. It cannot be embedded because of `X-Frame-Options` and Cloudflare. |
 | Game high scores | Stored per game in `localStorage` under `raevix.<game>.best`. |
 
@@ -356,8 +377,10 @@ Raevix stores UI preferences, the window-restore list, notes, the calculator tap
 
 ## Credits
 
-Designed and built as the **Raevix** portal — v2.0.
+Designed and built as the **Raevix** portal — v2.1.
 
 **Credits to Raevik.**
+
+Arcade catalog powered by [GameMonetize](https://gamemonetize.com/); extension listings belong to their respective developers and are distributed by the Chrome Web Store.
 
 Built for GitHub Pages. Runs in any modern browser, no install required.

@@ -19,6 +19,7 @@ import { mountTaskManager } from './taskmanager.js';
 import { mountPaint } from './paint.js';
 import { mountMusic } from './music.js';
 import { mountClock } from './clock.js';
+import { mountExtensions } from './extensions.js';
 import { confirmDialog, escapeHtml, toast } from './ui.js';
 
 export const APPS = {
@@ -127,6 +128,14 @@ export const APPS = {
     height: 600,
     flush: true,
     mount: mountProxy
+  },
+  extensions: {
+    title: 'Extensions',
+    meta: 'Chrome · curated picks',
+    icon: 'assets/icons/extensions.svg',
+    width: 940,
+    height: 680,
+    mount: mountExtensions
   },
   guide: {
     title: 'Quick Guide',
@@ -333,7 +342,7 @@ function mountSettings(body) {
 
       <div class="settings__foot">
         <button class="btn btn--danger" id="settingsReset" type="button">Reset all preferences</button>
-        <span class="settings__credit">Raevix OS v2.0 · credited to Raevik</span>
+        <span class="settings__credit">Raevix OS v2.1 · credited to Raevik</span>
       </div>
     </div>
   `;
