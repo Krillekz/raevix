@@ -1,6 +1,6 @@
 # Raevix OS — Unblocked Arcade Desktop
 
-A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a **512-title Games Cabinet** — six original HTML5 games, six live web portals and a 500-game GameMonetize catalog. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — plus a Chrome **Extension Picks** window make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
+A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a **512-title Games Cabinet** — six original HTML5 games, six live web portals and a 500-game GameMonetize catalog. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
 
 **Live:** <https://krillekz.github.io/raevix/>
 
@@ -21,13 +21,12 @@ A futuristic, fully responsive **single-page desktop environment** for the brows
 - **Taskbar** — centered Start trigger, open-window chips on the left, and an auto-updating 12-hour clock (24-hour optional in Settings).
 - **Private Browser** — an incognito-style shell with an address bar, back / forward / reload / home, session-only pins and a one-click session wipe. History and bookmarks live in memory; nothing is written to storage.
 - **Games Cabinet** — searchable, filterable storefront (All / Action / Arcade / Puzzle / Racing / Adventure / Sports / Multiplayer / Casual / Retro / Strategy / Web Arcade) with **512 titles**: six original games, six live portals and 500 GameMonetize games. The shelf renders 60 cards at a time so opening stays instant; category counts, search and a **Show more** button cover the rest. Every title launches in its own sandboxed iframe window with reload + open-standalone controls.
-- **Chrome Extension Picks** — a desktop app and shortcut that links eight vetted extensions (uBlock Origin, Dark Reader, Bitwarden, SponsorBlock, Privacy Badger, Tampermonkey, Video Speed Controller, Google Translate) to their official Chrome Web Store listings. It explains plainly that a page cannot install extensions into a Google account or browser profile; Chrome requires a click on **Add to Chrome** for each one, and Workspace admins can force-install through enterprise policy.
 - **Proxy Mock** — an honest, clearly labelled mock browser shell with a working address bar and quick links. It does not tunnel traffic; the panel explains how to attach a real server-side proxy.
 - **Customization** — six accent presets plus a full colour picker, six wallpapers, neon glow, scanline overlay, motion, sounds, clock and session preferences. Everything is saved and re-applied on boot.
 - **Working terminal** — `raevix-sh` opens apps and games, writes notes, evaluates maths, switches accent or wallpaper, inspects windows, locks the session and prints a `neofetch`. Tab completion and command history included.
 - **Animated anime backdrops** — original **Sakura Idol** and **Neon Ronin** character scenes with floating figures, drifting petals or embers, and pulsing halos. No third-party artwork is bundled.
 - **Settings & Trash** — a visual appearance editor with live previews, instant reset, and an empty-state recycle bin.
-- **LunarX shortcut** — a dedicated desktop and Start-menu entry. LunarX refuses framing and uses a Cloudflare check, so the shortcut opens it in a real browser tab instead of a blank iframe.
+- **HiAnime shortcut** — a dedicated desktop and Start-menu entry. Streaming sites refuse framing, so the shortcut opens HiAnime in a real browser tab instead of a blank iframe.
 - **Reference shortcuts** — Wikipedia and Internet Archive open directly inside a Private Browser window on the chosen page, and a **Quick Guide** window summarises the shell, theming, browser and arcade in one place.
 - **Accessible & responsive** — keyboard-openable shortcuts, themed focus rings, Escape-to-close menus, and a full-width layout down to small phones.
 - **6 built-in games** — Basket Hoop, Neon Breakout, Void Runner, Retro Snake, Neon Pong and Neon 2048. Canvas/DOM games with keyboard, mouse and touch input plus local high scores.
@@ -59,7 +58,6 @@ Raevix/
 │     ├─ games.js             # Library loader, Games Cabinet, iframe launcher
 │     ├─ browser.js           # Session-only Private Browser app
 │     ├─ guide.js             # Quick Guide help window
-│     ├─ extensions.js        # Chrome extension picks and store links
 │     ├─ apps.js              # App registry, Settings, Proxy Mock, Trash
 │     ├─ notes.js             # Persistent notebook
 │     ├─ calculator.js        # Calculator UI, tape and keyboard input
@@ -237,7 +235,6 @@ Preferences live under the `raevix.settings.v1` localStorage key. **Reset all pr
 | **Music** | Three original WebAudio chiptune loops (Neon Skyline, Sakura Circuit, Midnight Ronin) with play/pause, next/previous, volume and a live spectrum. Nothing is streamed or sampled. |
 | **Clock & Timers** | Analog and digital local clock, four world zones, a stopwatch with laps, and a countdown timer with presets and a synthesised alarm. |
 | **Task Manager** | Measures real frame rate, JS heap (where exposed), localStorage usage, uptime and DOM size, and can focus, minimise, maximise or close every open window. |
-| **Extensions** | Eight Chrome extension picks with one-click links to their official Web Store pages, a copy-the-list button, Chrome sync guidance and the managed-account policy link. It cannot install anything itself — no website can. |
 
 Local keys used by the new apps: `raevix.notes.v1`, `raevix.calc.history.v1`, `raevix.music.volume` and `raevix.session.v1` (the restore list). All are device-local and can be cleared with **Reset all preferences** or the Start-menu reset.
 
@@ -245,9 +242,9 @@ Local keys used by the new apps: `raevix.notes.v1`, `raevix.calc.history.v1`, `r
 
 **Sakura Idol** and **Neon Ronin** are drawn in-house as SVG illustrations, then animated with CSS: a slow float, breathing halo, tail or scarf sway inside the artwork, and drifting petals or rising embers. They use no external assets, so they work offline and do not depend on anyone else's copyright. The **Motion effects** switch and the OS reduced-motion setting freeze all of it.
 
-### LunarX shortcut
+### HiAnime shortcut
 
-The desktop **LunarX** icon (and its Start-menu entry) points at <https://lunarx.to/>. It opens in a new tab by design: the site sends `X-Frame-Options: SAMEORIGIN` and a Cloudflare challenge, so it can never render inside an iframe. If your browser blocks the tab, allow pop-ups for Raevix and launch it again.
+The desktop **HiAnime** icon (and its Start-menu entry) points at <https://hianime.ms/>. It opens in a new tab by design: streaming sites refuse to render inside another site's iframe. If your browser blocks the tab, allow pop-ups for Raevix and launch it again.
 
 ### Reference shortcuts
 
@@ -367,8 +364,7 @@ GitHub Pages rebuilds automatically on every push to `main`.
 | Unwanted windows reopen | Turn off **Restore windows** in Settings → Session. |
 | A web portal is blank | The portal can change its framing policy or go offline. Use the window's **Open** button, or remove its entry from `games.json`. |
 | A hosted game is blank | GameMonetize retired or moved that title. Use **Open** to load it in a tab, or delete its entry. The other 499 are unaffected. |
-| Extensions did not install | Expected: a page cannot install extensions. Each card opens the store listing, where you press **Add to Chrome** and confirm. |
-| LunarX did not open | It opens in a new tab and needs pop-ups allowed for Raevix. It cannot be embedded because of `X-Frame-Options` and Cloudflare. |
+| HiAnime did not open | It opens in a new tab and needs pop-ups allowed for Raevix. Streaming sites cannot be embedded inside the desktop. |
 | Game high scores | Stored per game in `localStorage` under `raevix.<game>.best`. |
 
 Raevix stores UI preferences, the window-restore list, notes, the calculator tape, music volume and game high scores locally in the browser. Private Browser history and pins stay in memory and are never written to storage. No analytics, no network requests other than Google Fonts and any page you open in the browser.
@@ -377,10 +373,10 @@ Raevix stores UI preferences, the window-restore list, notes, the calculator tap
 
 ## Credits
 
-Designed and built as the **Raevix** portal — v2.1.
+Designed and built as the **Raevix** portal — v2.2.
 
 **Credits to Raevik.**
 
-Arcade catalog powered by [GameMonetize](https://gamemonetize.com/); extension listings belong to their respective developers and are distributed by the Chrome Web Store.
+Arcade catalog powered by [GameMonetize](https://gamemonetize.com/).
 
 Built for GitHub Pages. Runs in any modern browser, no install required.

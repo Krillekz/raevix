@@ -70,8 +70,8 @@ function announceReady() {
       const count = library.games.length;
       window.setTimeout(() => {
         toast(count > 0
-          ? `Raevix OS 2.1 online — ${getAppList().length} apps and ${count} arcade titles. Ctrl+Shift+K for commands.`
-          : 'Raevix OS 2.1 online — Ctrl+Shift+K for commands.');
+          ? `Raevix OS 2.2 online — ${getAppList().length} apps and ${count} arcade titles. Ctrl+Shift+K for commands.`
+          : 'Raevix OS 2.2 online — Ctrl+Shift+K for commands.');
       }, 1900);
     })
     .catch(() => {

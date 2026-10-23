@@ -14,10 +14,9 @@ const SHORTCUTS = [
   { label: 'Task Manager', icon: 'assets/icons/task-manager.svg', app: 'taskmanager' },
   { label: 'Wikipedia', icon: 'assets/icons/wiki.svg', app: 'wikipedia' },
   { label: 'Internet Archive', icon: 'assets/icons/archive.svg', app: 'archive' },
-  { label: 'LunarX', icon: 'assets/icons/lunarx.svg', app: 'lunarx' },
+  { label: 'HiAnime', icon: 'assets/icons/hianime.svg', app: 'hianime' },
   { label: 'Quick Guide', icon: 'assets/icons/guide.svg', app: 'guide' },
   { label: 'Proxy Mock', icon: 'assets/icons/proxy-mock.svg', app: 'proxy' },
-  { label: 'Extensions', icon: 'assets/icons/extensions.svg', app: 'extensions' },
   { label: 'Settings', icon: 'assets/icons/settings.svg', app: 'settings' },
   { label: 'Trash Bin', icon: 'assets/icons/trash.svg', app: 'trash' }
 ];
