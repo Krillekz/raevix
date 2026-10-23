@@ -41,11 +41,19 @@ const SECTIONS = [
     ]
   },
   {
+    title: 'Anime',
+    rows: [
+      ['Hub', 'The Anime window gathers ten streaming services. Seven open in a Private Browser frame; RetroCrush, Tubi and HiAnime open in a new tab.'],
+      ['HiAnime', 'Also has its own desktop shortcut. Streaming sites refuse to load inside an iframe.'],
+      ['No proxy', 'Raevix is static and cannot tunnel traffic or bypass network filters. Proxy Mock only demonstrates the layout.'],
+      ['Third-party', 'Raevix does not host or control these sites. Accounts, ads and catalogs belong to each provider.']
+    ]
+  },
+  {
     title: 'Arcade and shortcuts',
     rows: [
       ['Cabinet', '512 titles: six built-in games, six web portals and a 500-game GameMonetize catalog. Search and category tabs filter the shelf.'],
-      ['Wikipedia & Archive', 'These open straight inside a Private Browser window, already on the page.'],
-      ['HiAnime', 'Opens in a new tab — the streaming site refuses to load inside an iframe.']
+      ['Wikipedia & Archive', 'These open straight inside a Private Browser window, already on the page.']
     ]
   }
 ];
@@ -75,7 +83,7 @@ export function mountGuide(body) {
 
       ${sections}
 
-      <p class="guide__foot">Raevix OS v2.2 · artwork and code by Raevik</p>
+      <p class="guide__foot">Raevix OS v2.3 · artwork and code by Raevik</p>
     </div>
   `;
 }

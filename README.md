@@ -1,6 +1,6 @@
 # Raevix OS — Unblocked Arcade Desktop
 
-A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, and a **512-title Games Cabinet** — six original HTML5 games, six live web portals and a 500-game GameMonetize catalog. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
+A futuristic, fully responsive **single-page desktop environment** for the browser. Raevix boots into a neon workspace with draggable, snappable windows, a Start menu, a command palette, a session-only private browser, a **512-title Games Cabinet** — six original HTML5 games, six live web portals and a 500-game GameMonetize catalog — and an **Anime hub** with ten streaming services. Seven built-in apps — Notes, Calculator, Terminal, Paint, Music, Clock & Timers and Task Manager — make it a usable little operating system rather than a demo. Accent colour, wallpaper and effects are yours to change. Everything is static — no framework, no build step, no backend, no tracking.
 
 **Live:** <https://krillekz.github.io/raevix/>
 
@@ -26,7 +26,8 @@ A futuristic, fully responsive **single-page desktop environment** for the brows
 - **Working terminal** — `raevix-sh` opens apps and games, writes notes, evaluates maths, switches accent or wallpaper, inspects windows, locks the session and prints a `neofetch`. Tab completion and command history included.
 - **Animated anime backdrops** — original **Sakura Idol** and **Neon Ronin** character scenes with floating figures, drifting petals or embers, and pulsing halos. No third-party artwork is bundled.
 - **Settings & Trash** — a visual appearance editor with live previews, instant reset, and an empty-state recycle bin.
-- **HiAnime shortcut** — a dedicated desktop and Start-menu entry. Streaming sites refuse framing, so the shortcut opens HiAnime in a real browser tab instead of a blank iframe.
+- **Anime hub** — a dedicated **Anime** app and desktop shortcut with ten streaming services. Seven open in a Private Browser window; RetroCrush, Tubi and HiAnime send frame-blocking headers, so they open in a new tab. All links are third-party; Raevix hosts nothing.
+- **HiAnime shortcut** — its own desktop and Start-menu entry alongside the hub. Streaming sites refuse framing, so it opens in a real browser tab instead of a blank iframe.
 - **Reference shortcuts** — Wikipedia and Internet Archive open directly inside a Private Browser window on the chosen page, and a **Quick Guide** window summarises the shell, theming, browser and arcade in one place.
 - **Accessible & responsive** — keyboard-openable shortcuts, themed focus rings, Escape-to-close menus, and a full-width layout down to small phones.
 - **6 built-in games** — Basket Hoop, Neon Breakout, Void Runner, Retro Snake, Neon Pong and Neon 2048. Canvas/DOM games with keyboard, mouse and touch input plus local high scores.
@@ -57,6 +58,7 @@ Raevix/
 │     ├─ start-menu.js        # Start drawer, search and reset switch
 │     ├─ games.js             # Library loader, Games Cabinet, iframe launcher
 │     ├─ browser.js           # Session-only Private Browser app
+│     ├─ anime.js             # Anime hub and streaming-site launcher
 │     ├─ guide.js             # Quick Guide help window
 │     ├─ apps.js              # App registry, Settings, Proxy Mock, Trash
 │     ├─ notes.js             # Persistent notebook
@@ -235,6 +237,7 @@ Preferences live under the `raevix.settings.v1` localStorage key. **Reset all pr
 | **Music** | Three original WebAudio chiptune loops (Neon Skyline, Sakura Circuit, Midnight Ronin) with play/pause, next/previous, volume and a live spectrum. Nothing is streamed or sampled. |
 | **Clock & Timers** | Analog and digital local clock, four world zones, a stopwatch with laps, and a countdown timer with presets and a synthesised alarm. |
 | **Task Manager** | Measures real frame rate, JS heap (where exposed), localStorage usage, uptime and DOM size, and can focus, minimise, maximise or close every open window. |
+| **Anime** | Ten streaming services in one shelf. Framing-friendly sites open in a Private Browser window; the rest open in a new tab. No proxy, no hosting.
 
 Local keys used by the new apps: `raevix.notes.v1`, `raevix.calc.history.v1`, `raevix.music.volume` and `raevix.session.v1` (the restore list). All are device-local and can be cleared with **Reset all preferences** or the Start-menu reset.
 
@@ -242,9 +245,13 @@ Local keys used by the new apps: `raevix.notes.v1`, `raevix.calc.history.v1`, `r
 
 **Sakura Idol** and **Neon Ronin** are drawn in-house as SVG illustrations, then animated with CSS: a slow float, breathing halo, tail or scarf sway inside the artwork, and drifting petals or rising embers. They use no external assets, so they work offline and do not depend on anyone else's copyright. The **Motion effects** switch and the OS reduced-motion setting freeze all of it.
 
-### HiAnime shortcut
+### Anime hub
 
-The desktop **HiAnime** icon (and its Start-menu entry) points at <https://hianime.ms/>. It opens in a new tab by design: streaming sites refuse to render inside another site's iframe. If your browser blocks the tab, allow pop-ups for Raevix and launch it again.
+The desktop **Anime** icon (and its Start-menu entry) opens a shelf of ten services: HiAnime, RetroCrush, Tubi, Pluto TV, 4anime, AnimePahe, AnimeHeaven, AnimeFlix TV, AniMixPlay and 9anime.
+
+Sites that permit framing load in a **Private Browser** window with an address bar and an external-open button. RetroCrush, Tubi and HiAnime send `X-Frame-Options` or `frame-ancestors`, so they open in a real tab. The separate **HiAnime** shortcut still opens directly.
+
+This is a directory, not a proxy. Raevix is static and cannot tunnel traffic, strip another site's headers or bypass network filters. The **Proxy Mock** window is a layout demo only.
 
 ### Reference shortcuts
 
@@ -365,6 +372,8 @@ GitHub Pages rebuilds automatically on every push to `main`.
 | A web portal is blank | The portal can change its framing policy or go offline. Use the window's **Open** button, or remove its entry from `games.json`. |
 | A hosted game is blank | GameMonetize retired or moved that title. Use **Open** to load it in a tab, or delete its entry. The other 499 are unaffected. |
 | HiAnime did not open | It opens in a new tab and needs pop-ups allowed for Raevix. Streaming sites cannot be embedded inside the desktop. |
+| An anime site is blank | Only framing-friendly services open in Raevix. 4anime, AnimePahe, AnimeHeaven, AnimeFlix, AniMixPlay, 9anime and Pluto load in a Private Browser window; use its external-open button if a page is blocked. |
+| Proxy does not unblock anything | Expected. Proxy Mock is a UI demo; a real proxy needs a server or Worker, and GitHub Pages cannot host one. |
 | Game high scores | Stored per game in `localStorage` under `raevix.<game>.best`. |
 
 Raevix stores UI preferences, the window-restore list, notes, the calculator tape, music volume and game high scores locally in the browser. Private Browser history and pins stay in memory and are never written to storage. No analytics, no network requests other than Google Fonts and any page you open in the browser.
@@ -373,7 +382,7 @@ Raevix stores UI preferences, the window-restore list, notes, the calculator tap
 
 ## Credits
 
-Designed and built as the **Raevix** portal — v2.2.
+Designed and built as the **Raevix** portal — v2.3.
 
 **Credits to Raevik.**
 

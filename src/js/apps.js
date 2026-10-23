@@ -19,6 +19,7 @@ import { mountTaskManager } from './taskmanager.js';
 import { mountPaint } from './paint.js';
 import { mountMusic } from './music.js';
 import { mountClock } from './clock.js';
+import { mountAnime } from './anime.js';
 import { confirmDialog, escapeHtml, toast } from './ui.js';
 
 export const APPS = {
@@ -118,6 +119,14 @@ export const APPS = {
     meta: 'Anime · new tab',
     icon: 'assets/icons/hianime.svg',
     external: 'https://hianime.ms/'
+  },
+  anime: {
+    title: 'Anime',
+    meta: 'Streaming · 10 sites',
+    icon: 'assets/icons/anime.svg',
+    width: 1000,
+    height: 700,
+    mount: mountAnime
   },
   proxy: {
     title: 'Proxy Mock',
@@ -333,7 +342,7 @@ function mountSettings(body) {
 
       <div class="settings__foot">
         <button class="btn btn--danger" id="settingsReset" type="button">Reset all preferences</button>
-        <span class="settings__credit">Raevix OS v2.2 · credited to Raevik</span>
+        <span class="settings__credit">Raevix OS v2.3 · credited to Raevik</span>
       </div>
     </div>
   `;

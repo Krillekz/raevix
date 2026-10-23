@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Anime">
+  <defs>
+    <linearGradient id="anBg" x1="8" y1="4" x2="56" y2="60">
+      <stop offset="0" stop-color="#3a0e24"/>
+      <stop offset="1" stop-color="#0d0512"/>
+    </linearGradient>
+    <linearGradient id="anFg" x1="18" y1="14" x2="46" y2="50">
+      <stop offset="0" stop-color="#ffd8ea"/>
+      <stop offset="1" stop-color="#ff5aa5"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="url(#anBg)" stroke="#ff5aa5" stroke-opacity=".45"/>
+  <path d="M12 16c7 2.4 13.3 3.2 20 3.2S45 18.4 52 16" stroke="url(#anFg)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M16 25h32M20 25v26M44 25v26M20 34h24" stroke="url(#anFg)" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28.5 29.5v13l11-6.5-11-6.5Z" fill="#ff8fc7" stroke="#ffd8ea" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="50" cy="18" r="1.2" fill="#8ff2ff"/>
+  <circle cx="13" cy="22" r="1" fill="#ffd8ea" opacity=".8"/>
+</svg>

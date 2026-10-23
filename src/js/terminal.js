@@ -14,7 +14,7 @@ import { escapeHtml, toast } from './ui.js';
 const START = Date.now();
 
 const APP_IDS = [
-  'browser', 'wikipedia', 'archive', 'games', 'hianime', 'notes', 'calculator', 'terminal',
+  'browser', 'wikipedia', 'archive', 'games', 'hianime', 'anime', 'notes', 'calculator', 'terminal',
   'taskmanager', 'paint', 'music', 'clock', 'proxy', 'guide', 'settings', 'trash'
 ];
 
@@ -364,7 +364,7 @@ export function mountTerminal(body, win) {
           <pre class="term__ascii">   ▄▄▄▄▄▄▄▄▄
   █  R A E V I X  █   <span class="term__accent">raevik@desktop</span>
    ▀▀▀▀▀▀▀▀▀▀▀▀▀    <span class="term__dim">---------------</span>
-                     <span class="term__dim">OS</span>      Raevix OS 2.2
+                     <span class="term__dim">OS</span>      Raevix OS 2.3
                      <span class="term__dim">Shell</span>   raevix-sh
                      <span class="term__dim">Uptime</span>  ${bootTime()}
                      <span class="term__dim">Accent</span>  ${escapeHtml(settings.accent)} ${getAccentColor()}
@@ -433,7 +433,7 @@ export function mountTerminal(body, win) {
     window.requestAnimationFrame(() => input.focus({ preventScroll: true }));
   });
 
-  print('Raevix shell 2.2 — local guest session', 'accent');
+  print('Raevix shell 2.3 — local guest session', 'accent');
   print('Type “help” for commands, or “neofetch” for the flex.', 'dim');
   print('');
   input.focus({ preventScroll: true });

@@ -15,6 +15,7 @@ const SHORTCUTS = [
   { label: 'Wikipedia', icon: 'assets/icons/wiki.svg', app: 'wikipedia' },
   { label: 'Internet Archive', icon: 'assets/icons/archive.svg', app: 'archive' },
   { label: 'HiAnime', icon: 'assets/icons/hianime.svg', app: 'hianime' },
+  { label: 'Anime', icon: 'assets/icons/anime.svg', app: 'anime' },
   { label: 'Quick Guide', icon: 'assets/icons/guide.svg', app: 'guide' },
   { label: 'Proxy Mock', icon: 'assets/icons/proxy-mock.svg', app: 'proxy' },
   { label: 'Settings', icon: 'assets/icons/settings.svg', app: 'settings' },
